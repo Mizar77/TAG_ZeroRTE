@@ -1,0 +1,135 @@
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/rnn.py:70: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
+  "num_layers={}".format(dropout, num_layers))
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.weight', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.decoder.weight', 'predictions.dense.bias', 'predictions.dense.weight', 'predictions.LayerNorm.bias', 'predictions.LayerNorm.weight', 'predictions.decoder.bias', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/fewrel/unseen_10_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_10_seed_2/dev.jsonl', 'path_test': 'zero_rte/fewrel/unseen_10_seed_2/test.jsonl', 'data_name': 'fewrel', 'split': 'unseen_10_seed_2', 'type': 'train', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/fewrel/unseen_10_seed_2/generator/model', data_dir='outputs/wrapper/fewrel/unseen_10_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+fit {'path_train': 'zero_rte/fewrel/unseen_10_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_10_seed_2/dev.jsonl'}
+train vocab size: 67059
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 67159, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_train_large/unseen_10_seed_2/extractor/data/train.txt
+{"train_model: args: ModelArguments(model_class='JointModel', model_read_ckpt='', model_write_ckpt='outputs/wrapper/fewrel_train_large/unseen_10_seed_2/extractor/model', pretrained_wv='outputs/wrapper/fewrel_train_large/unseen_10_seed_2/extractor/data/train.txt', label_config=None, batch_size=24, evaluate_interval=500, max_steps=10000, max_epoches=20, decay_rate=0.05, token_emb_dim=100, char_encoder='lstm', char_emb_dim=30, cased=False, hidden_dim=200, num_layers=3, crf=None, loss_reduction='sum', maxlen=None, dropout=0.5, optimizer='adam', lr=0.001, vocab_size=67159, vocab_file=None, ner_tag_vocab_size=64, re_tag_vocab_size=250, lm_emb_dim=1024, lm_emb_path='albert-large-v2', head_emb_dim=384, tag_form='iob2', warm_steps=1000, grad_period=1, device='cuda', seed=42)"}
+warm up: learning rate was adjusted to 1e-06
+warm up: learning rate was adjusted to 1.1e-05
+warm up: learning rate was adjusted to 2.1000000000000002e-05
+warm up: learning rate was adjusted to 3.1e-05
+warm up: learning rate was adjusted to 4.1e-05
+warm up: learning rate was adjusted to 5.1000000000000006e-05
+warm up: learning rate was adjusted to 6.1e-05
+warm up: learning rate was adjusted to 7.1e-05
+warm up: learning rate was adjusted to 8.1e-05
+warm up: learning rate was adjusted to 9.1e-05
+g_step 100, step 100, avg_time 1.316, loss:52071.4063
+warm up: learning rate was adjusted to 0.000101
+warm up: learning rate was adjusted to 0.000111
+warm up: learning rate was adjusted to 0.000121
+warm up: learning rate was adjusted to 0.000131
+warm up: learning rate was adjusted to 0.000141
+warm up: learning rate was adjusted to 0.00015099999999999998
+warm up: learning rate was adjusted to 0.000161
+warm up: learning rate was adjusted to 0.000171
+warm up: learning rate was adjusted to 0.00018099999999999998
+warm up: learning rate was adjusted to 0.000191
+g_step 200, step 200, avg_time 1.064, loss:2558.7120
+warm up: learning rate was adjusted to 0.000201
+warm up: learning rate was adjusted to 0.000211
+warm up: learning rate was adjusted to 0.000221
+warm up: learning rate was adjusted to 0.000231
+warm up: learning rate was adjusted to 0.000241
+warm up: learning rate was adjusted to 0.000251
+warm up: learning rate was adjusted to 0.000261
+warm up: learning rate was adjusted to 0.00027100000000000003
+warm up: learning rate was adjusted to 0.00028100000000000005
+warm up: learning rate was adjusted to 0.00029099999999999997
+g_step 300, step 300, avg_time 1.067, loss:2280.7016
+warm up: learning rate was adjusted to 0.000301
+warm up: learning rate was adjusted to 0.000311
+warm up: learning rate was adjusted to 0.000321
+warm up: learning rate was adjusted to 0.000331
+warm up: learning rate was adjusted to 0.00034100000000000005
+warm up: learning rate was adjusted to 0.000351
+warm up: learning rate was adjusted to 0.000361
+warm up: learning rate was adjusted to 0.000371
+warm up: learning rate was adjusted to 0.000381
+warm up: learning rate was adjusted to 0.000391
+g_step 400, step 400, avg_time 1.052, loss:2180.9892
+warm up: learning rate was adjusted to 0.00040100000000000004
+warm up: learning rate was adjusted to 0.000411
+warm up: learning rate was adjusted to 0.000421
+warm up: learning rate was adjusted to 0.000431
+warm up: learning rate was adjusted to 0.000441
+warm up: learning rate was adjusted to 0.000451
+warm up: learning rate was adjusted to 0.00046100000000000004
+warm up: learning rate was adjusted to 0.000471
+warm up: learning rate was adjusted to 0.000481
+warm up: learning rate was adjusted to 0.000491
+g_step 500, step 500, avg_time 1.063, loss:2010.4213
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1113: UserWarning: Using a non-full backward hook when the forward contains multiple autograd Nodes is deprecated and will be removed in future versions. This hook will be missing some grad_input. Please use register_full_backward_hook to get the documented behavior.
+  warnings.warn("Using a non-full backward hook when the forward contains multiple autograd Nodes "
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1190: UserWarning: operator() sees varying value in profiling, ignoring and this should be handled by GUARD logic (Triggered internally at ../torch/csrc/jit/codegen/cuda/parser.cpp:3668.)
+  return forward_call(*input, **kwargs)
+> [0;32m/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/models/joint_models.py[0m(514)[0;36mpredict_step[0;34m()[0m
+[0;32m    513 [0;31m            [0mipdb[0m[0;34m.[0m[0mset_trace[0m[0;34m([0m[0;34m)[0m[0;34m[0m[0;34m[0m[0m
+[0m[0;32m--> 514 [0;31m        [0mrets[0m[0;34m[[0m[0;34m'entity_preds'[0m[0;34m][0m [0;34m=[0m [0mentity_preds[0m[0;34m[0m[0;34m[0m[0m
+[0m[0;32m    515 [0;31m        [0mrets[0m[0;34m[[0m[0;34m'relation_preds'[0m[0;34m][0m [0;34m=[0m [0mrelation_preds[0m[0;34m[0m[0;34m[0m[0m
+[0m
+ipdb> 
+Traceback (most recent call last):
+  File "wrapper.py", line 821, in <module>
+    Fire()
+  File "/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/fire/core.py", line 141, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+  File "/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/fire/core.py", line 471, in _Fire
+    target=component.__name__)
+  File "/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/fire/core.py", line 681, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+  File "wrapper.py", line 367, in main
+    extractor.fit(path_train, path_dev)
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/extractor.py", line 196, in fit
+    trainer.train_model(args=args)
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/data/base.py", line 94, in train_model
+    self._evaluate_during_train(model=model, trainer_target=trainer_target, args=args)
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/data/joint_data.py", line 251, in _evaluate_during_train
+    rets = trainer_target.evaluate_model(model, verbose=0, test_type='valid')
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/data/joint_data.py", line 206, in evaluate_model
+    inputs = model.predict_step(inputs)
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/models/base.py", line 98, in hooked_predict_step
+    rets = self._predict_step(inputs, labels)
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/models/joint_models.py", line 514, in predict_step
+    rets['entity_preds'] = entity_preds
+  File "/cto_studio/xuting/OpenIE/DualOpenIE_v3/two-are-better-than-one/models/joint_models.py", line 514, in predict_step
+    rets['entity_preds'] = entity_preds
+  File "/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/bdb.py", line 88, in trace_dispatch
+    return self.dispatch_line(frame)
+  File "/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/bdb.py", line 113, in dispatch_line
+    if self.quitting: raise BdbQuit
+bdb.BdbQuit
+
+If you suspect this is an IPython 7.33.0 bug, please report it at:
+    https://github.com/ipython/ipython/issues
+or send an email to the mailing list at ipython-dev@python.org
+
+You can print a more detailed traceback right now with "%tb", or use "%debug"
+to interactively debug it.
+
+Extra-detailed tracebacks for bug-reporting purposes can be enabled via:
+    %config Application.verbose_crash=True
+
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/rnn.py:70: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
+  "num_layers={}".format(dropout, num_layers))
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.seq_relationship.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.decoder.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.predictions.bias', 'cls.predictions.transform.dense.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.decoder.weight', 'predictions.dense.bias', 'predictions.LayerNorm.weight', 'predictions.bias', 'predictions.decoder.bias', 'predictions.LayerNorm.bias', 'predictions.dense.weight']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+slurmstepd-ctolab01: error: *** JOB 5954 ON ctolab01 CANCELLED AT 2023-08-27T11:00:57 ***

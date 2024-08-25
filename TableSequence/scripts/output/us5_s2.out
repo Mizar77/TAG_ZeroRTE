@@ -1,0 +1,747 @@
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/rnn.py:70: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
+  "num_layers={}".format(dropout, num_layers))
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.decoder.weight', 'predictions.dense.weight', 'predictions.decoder.bias', 'predictions.LayerNorm.bias', 'predictions.dense.bias', 'predictions.LayerNorm.weight', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/fewrel/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'data_name': 'fewrel', 'split': 'unseen_5_seed_2', 'type': 'train', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+fit {'path_train': 'zero_rte/fewrel/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl'}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'labels': ['followed by', 'heritage designation', 'manufacturer', 'operator', 'publisher'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl', 'path_out': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl'}}
+predict vocab size: 11903
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 12003, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1190: UserWarning: operator() sees varying value in profiling, ignoring and this should be handled by GUARD logic (Triggered internally at ../torch/csrc/jit/codegen/cuda/parser.cpp:3668.)
+  return forward_call(*input, **kwargs)
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1190: UserWarning: operator() profile_node %91 : int[] = prim::profile_ivalue[profile_failed="varying profile values"](%89)
+ does not have profile information (Triggered internally at ../torch/csrc/jit/codegen/cuda/graph_fuser.cpp:105.)
+  return forward_call(*input, **kwargs)
+Extractor Predicting: 1it [00:17, 17.13s/it]Extractor Predicting: 2it [00:18,  7.72s/it]Extractor Predicting: 3it [00:18,  4.46s/it]Extractor Predicting: 4it [00:19,  2.93s/it]Extractor Predicting: 5it [00:20,  2.09s/it]Extractor Predicting: 6it [00:20,  1.57s/it]Extractor Predicting: 7it [00:21,  1.25s/it]Extractor Predicting: 8it [00:21,  1.04s/it]Extractor Predicting: 9it [00:22,  1.11it/s]Extractor Predicting: 10it [00:22,  1.28it/s]Extractor Predicting: 11it [00:23,  1.41it/s]Extractor Predicting: 12it [00:24,  1.48it/s]Extractor Predicting: 13it [00:24,  1.57it/s]Extractor Predicting: 14it [00:25,  1.52it/s]Extractor Predicting: 15it [00:25,  1.61it/s]Extractor Predicting: 16it [00:26,  1.65it/s]Extractor Predicting: 17it [00:27,  1.63it/s]Extractor Predicting: 18it [00:27,  1.68it/s]Extractor Predicting: 19it [00:28,  1.75it/s]Extractor Predicting: 20it [00:28,  1.79it/s]Extractor Predicting: 21it [00:29,  1.78it/s]Extractor Predicting: 22it [00:29,  1.82it/s]Extractor Predicting: 23it [00:30,  1.76it/s]Extractor Predicting: 24it [00:30,  1.76it/s]Extractor Predicting: 25it [00:31,  1.75it/s]Extractor Predicting: 26it [00:32,  1.71it/s]Extractor Predicting: 27it [00:32,  1.74it/s]Extractor Predicting: 28it [00:33,  1.72it/s]Extractor Predicting: 29it [00:33,  1.61it/s]Extractor Predicting: 30it [00:34,  1.58it/s]Extractor Predicting: 31it [00:35,  1.57it/s]Extractor Predicting: 32it [00:35,  1.53it/s]Extractor Predicting: 33it [00:36,  1.51it/s]Extractor Predicting: 34it [00:37,  1.49it/s]Extractor Predicting: 35it [00:37,  1.54it/s]Extractor Predicting: 36it [00:38,  1.54it/s]Extractor Predicting: 37it [00:39,  1.55it/s]Extractor Predicting: 38it [00:39,  1.57it/s]Extractor Predicting: 39it [00:40,  1.54it/s]Extractor Predicting: 40it [00:41,  1.52it/s]Extractor Predicting: 41it [00:41,  1.50it/s]Extractor Predicting: 42it [00:42,  1.54it/s]Extractor Predicting: 43it [00:43,  1.54it/s]Extractor Predicting: 44it [00:43,  1.57it/s]Extractor Predicting: 45it [00:44,  1.53it/s]Extractor Predicting: 46it [00:45,  1.51it/s]Extractor Predicting: 47it [00:45,  1.56it/s]Extractor Predicting: 48it [00:46,  1.53it/s]Extractor Predicting: 49it [00:46,  1.54it/s]Extractor Predicting: 50it [00:47,  1.54it/s]Extractor Predicting: 51it [00:48,  1.54it/s]Extractor Predicting: 52it [00:48,  1.54it/s]Extractor Predicting: 53it [00:49,  1.52it/s]Extractor Predicting: 54it [00:50,  1.56it/s]Extractor Predicting: 55it [00:50,  1.53it/s]Extractor Predicting: 56it [00:51,  1.56it/s]Extractor Predicting: 57it [00:52,  1.57it/s]Extractor Predicting: 58it [00:52,  1.52it/s]Extractor Predicting: 59it [00:53,  1.54it/s]Extractor Predicting: 60it [00:54,  1.52it/s]Extractor Predicting: 61it [00:54,  1.50it/s]Extractor Predicting: 62it [00:55,  1.48it/s]Extractor Predicting: 63it [00:56,  1.46it/s]Extractor Predicting: 64it [00:56,  1.49it/s]Extractor Predicting: 65it [00:57,  1.47it/s]Extractor Predicting: 66it [00:58,  1.51it/s]Extractor Predicting: 67it [00:58,  1.49it/s]Extractor Predicting: 68it [00:59,  1.47it/s]Extractor Predicting: 69it [01:00,  1.47it/s]Extractor Predicting: 70it [01:01,  1.45it/s]Extractor Predicting: 71it [01:01,  1.49it/s]Extractor Predicting: 72it [01:02,  1.48it/s]Extractor Predicting: 73it [01:02,  1.51it/s]Extractor Predicting: 74it [01:03,  1.52it/s]Extractor Predicting: 75it [01:04,  1.50it/s]Extractor Predicting: 76it [01:04,  1.50it/s]Extractor Predicting: 77it [01:05,  1.49it/s]Extractor Predicting: 78it [01:06,  1.51it/s]Extractor Predicting: 79it [01:06,  1.52it/s]Extractor Predicting: 80it [01:07,  1.48it/s]Extractor Predicting: 81it [01:08,  1.48it/s]Extractor Predicting: 82it [01:09,  1.45it/s]Extractor Predicting: 83it [01:09,  1.46it/s]Extractor Predicting: 84it [01:10,  1.46it/s]Extractor Predicting: 85it [01:11,  1.45it/s]Extractor Predicting: 86it [01:11,  1.42it/s]Extractor Predicting: 87it [01:12,  1.45it/s]Extractor Predicting: 88it [01:13,  1.43it/s]Extractor Predicting: 89it [01:13,  1.43it/s]Extractor Predicting: 90it [01:14,  1.45it/s]Extractor Predicting: 91it [01:15,  1.46it/s]Extractor Predicting: 92it [01:15,  1.49it/s]Extractor Predicting: 93it [01:16,  1.50it/s]Extractor Predicting: 94it [01:17,  1.52it/s]Extractor Predicting: 95it [01:17,  1.53it/s]Extractor Predicting: 96it [01:18,  1.43it/s]Extractor Predicting: 97it [01:19,  1.47it/s]Extractor Predicting: 98it [01:19,  1.48it/s]Extractor Predicting: 99it [01:20,  1.48it/s]Extractor Predicting: 100it [01:21,  1.48it/s]Extractor Predicting: 101it [01:21,  1.52it/s]Extractor Predicting: 102it [01:22,  1.53it/s]Extractor Predicting: 103it [01:23,  1.54it/s]Extractor Predicting: 104it [01:23,  1.53it/s]Extractor Predicting: 105it [01:24,  1.56it/s]Extractor Predicting: 106it [01:25,  1.57it/s]Extractor Predicting: 107it [01:25,  1.56it/s]Extractor Predicting: 108it [01:26,  1.54it/s]Extractor Predicting: 109it [01:27,  1.53it/s]Extractor Predicting: 110it [01:27,  1.51it/s]Extractor Predicting: 111it [01:28,  1.56it/s]Extractor Predicting: 112it [01:28,  1.57it/s]Extractor Predicting: 113it [01:29,  1.54it/s]Extractor Predicting: 114it [01:30,  1.53it/s]Extractor Predicting: 115it [01:30,  1.55it/s]Extractor Predicting: 116it [01:31,  1.55it/s]Extractor Predicting: 117it [01:32,  1.52it/s]Extractor Predicting: 118it [01:32,  1.54it/s]Extractor Predicting: 119it [01:33,  1.57it/s]Extractor Predicting: 120it [01:34,  1.58it/s]Extractor Predicting: 121it [01:34,  1.53it/s]Extractor Predicting: 122it [01:35,  1.53it/s]Extractor Predicting: 123it [01:36,  1.54it/s]Extractor Predicting: 124it [01:36,  1.54it/s]Extractor Predicting: 125it [01:37,  1.59it/s]Extractor Predicting: 126it [01:38,  1.54it/s]Extractor Predicting: 127it [01:38,  1.54it/s]Extractor Predicting: 128it [01:39,  1.56it/s]Extractor Predicting: 129it [01:39,  1.58it/s]Extractor Predicting: 130it [01:40,  1.53it/s]Extractor Predicting: 131it [01:41,  1.53it/s]Extractor Predicting: 132it [01:41,  1.55it/s]Extractor Predicting: 133it [01:42,  1.51it/s]Extractor Predicting: 134it [01:43,  1.50it/s]Extractor Predicting: 135it [01:43,  1.53it/s]Extractor Predicting: 136it [01:44,  1.55it/s]Extractor Predicting: 137it [01:45,  1.55it/s]Extractor Predicting: 138it [01:45,  1.59it/s]Extractor Predicting: 139it [01:46,  1.62it/s]Extractor Predicting: 140it [01:47,  1.59it/s]Extractor Predicting: 141it [01:47,  1.59it/s]Extractor Predicting: 142it [01:48,  1.56it/s]Extractor Predicting: 143it [01:49,  1.53it/s]Extractor Predicting: 144it [01:49,  1.53it/s]Extractor Predicting: 144it [01:49,  1.31it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.decoder.weight', 'predictions.dense.weight', 'predictions.decoder.bias', 'predictions.LayerNorm.bias', 'predictions.dense.bias', 'predictions.LayerNorm.weight', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "all_single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/results_all_single_is_eval_True.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl'}}
+predict vocab size: 12902
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 13002, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.70it/s]Extractor Predicting: 2it [00:01,  1.79it/s]Extractor Predicting: 3it [00:01,  1.73it/s]Extractor Predicting: 4it [00:02,  1.73it/s]Extractor Predicting: 5it [00:02,  1.71it/s]Extractor Predicting: 6it [00:03,  1.64it/s]Extractor Predicting: 7it [00:04,  1.65it/s]Extractor Predicting: 8it [00:04,  1.66it/s]Extractor Predicting: 9it [00:05,  1.65it/s]Extractor Predicting: 10it [00:06,  1.59it/s]Extractor Predicting: 11it [00:06,  1.60it/s]Extractor Predicting: 12it [00:07,  1.65it/s]Extractor Predicting: 13it [00:07,  1.66it/s]Extractor Predicting: 14it [00:08,  1.66it/s]Extractor Predicting: 15it [00:09,  1.65it/s]Extractor Predicting: 16it [00:09,  1.66it/s]Extractor Predicting: 17it [00:10,  1.68it/s]Extractor Predicting: 18it [00:10,  1.67it/s]Extractor Predicting: 19it [00:11,  1.67it/s]Extractor Predicting: 20it [00:12,  1.63it/s]Extractor Predicting: 21it [00:12,  1.61it/s]Extractor Predicting: 22it [00:13,  1.58it/s]Extractor Predicting: 23it [00:13,  1.62it/s]Extractor Predicting: 24it [00:14,  1.65it/s]Extractor Predicting: 25it [00:15,  1.64it/s]Extractor Predicting: 26it [00:15,  1.72it/s]Extractor Predicting: 27it [00:16,  1.69it/s]Extractor Predicting: 28it [00:16,  1.73it/s]Extractor Predicting: 29it [00:17,  1.70it/s]Extractor Predicting: 30it [00:18,  1.59it/s]Extractor Predicting: 31it [00:18,  1.62it/s]Extractor Predicting: 32it [00:19,  1.67it/s]Extractor Predicting: 33it [00:19,  1.70it/s]Extractor Predicting: 34it [00:20,  1.67it/s]Extractor Predicting: 35it [00:21,  1.67it/s]Extractor Predicting: 36it [00:21,  1.67it/s]Extractor Predicting: 37it [00:22,  1.65it/s]Extractor Predicting: 38it [00:22,  1.64it/s]Extractor Predicting: 39it [00:23,  1.67it/s]Extractor Predicting: 40it [00:24,  1.70it/s]Extractor Predicting: 41it [00:24,  1.72it/s]Extractor Predicting: 42it [00:25,  1.73it/s]Extractor Predicting: 43it [00:25,  1.74it/s]Extractor Predicting: 44it [00:26,  1.71it/s]Extractor Predicting: 45it [00:26,  1.70it/s]Extractor Predicting: 46it [00:27,  1.71it/s]Extractor Predicting: 47it [00:28,  1.71it/s]Extractor Predicting: 48it [00:28,  1.70it/s]Extractor Predicting: 49it [00:29,  1.71it/s]Extractor Predicting: 50it [00:29,  1.74it/s]Extractor Predicting: 51it [00:30,  1.75it/s]Extractor Predicting: 52it [00:30,  1.76it/s]Extractor Predicting: 53it [00:31,  1.73it/s]Extractor Predicting: 54it [00:32,  1.70it/s]Extractor Predicting: 55it [00:32,  1.71it/s]Extractor Predicting: 56it [00:33,  1.66it/s]Extractor Predicting: 57it [00:34,  1.65it/s]Extractor Predicting: 58it [00:34,  1.67it/s]Extractor Predicting: 59it [00:35,  1.65it/s]Extractor Predicting: 60it [00:35,  1.65it/s]Extractor Predicting: 61it [00:36,  1.64it/s]Extractor Predicting: 62it [00:37,  1.62it/s]Extractor Predicting: 63it [00:37,  1.63it/s]Extractor Predicting: 64it [00:38,  1.62it/s]Extractor Predicting: 65it [00:38,  1.60it/s]Extractor Predicting: 66it [00:39,  1.62it/s]Extractor Predicting: 67it [00:40,  1.62it/s]Extractor Predicting: 68it [00:40,  1.58it/s]Extractor Predicting: 69it [00:41,  1.63it/s]Extractor Predicting: 70it [00:42,  1.60it/s]Extractor Predicting: 71it [00:42,  1.61it/s]Extractor Predicting: 72it [00:43,  1.60it/s]Extractor Predicting: 73it [00:43,  1.58it/s]Extractor Predicting: 74it [00:44,  1.59it/s]Extractor Predicting: 75it [00:45,  1.56it/s]Extractor Predicting: 76it [00:45,  1.55it/s]Extractor Predicting: 77it [00:46,  1.55it/s]Extractor Predicting: 78it [00:47,  1.58it/s]Extractor Predicting: 79it [00:47,  1.57it/s]Extractor Predicting: 80it [00:48,  1.56it/s]Extractor Predicting: 81it [00:49,  1.53it/s]Extractor Predicting: 82it [00:49,  1.57it/s]Extractor Predicting: 83it [00:50,  1.55it/s]Extractor Predicting: 84it [00:51,  1.57it/s]Extractor Predicting: 85it [00:51,  1.56it/s]Extractor Predicting: 86it [00:52,  1.58it/s]Extractor Predicting: 87it [00:52,  1.57it/s]Extractor Predicting: 88it [00:53,  1.59it/s]Extractor Predicting: 89it [00:54,  1.61it/s]Extractor Predicting: 90it [00:54,  1.62it/s]Extractor Predicting: 91it [00:55,  1.60it/s]Extractor Predicting: 92it [00:56,  1.60it/s]Extractor Predicting: 93it [00:56,  1.59it/s]Extractor Predicting: 94it [00:57,  1.61it/s]Extractor Predicting: 95it [00:57,  1.60it/s]Extractor Predicting: 96it [00:58,  1.60it/s]Extractor Predicting: 97it [00:59,  1.59it/s]Extractor Predicting: 98it [00:59,  1.60it/s]Extractor Predicting: 99it [01:00,  1.60it/s]Extractor Predicting: 100it [01:01,  1.60it/s]Extractor Predicting: 101it [01:01,  1.58it/s]Extractor Predicting: 102it [01:02,  1.59it/s]Extractor Predicting: 103it [01:02,  1.58it/s]Extractor Predicting: 104it [01:03,  1.56it/s]Extractor Predicting: 105it [01:04,  1.47it/s]Extractor Predicting: 106it [01:04,  1.52it/s]Extractor Predicting: 107it [01:05,  1.53it/s]Extractor Predicting: 108it [01:06,  1.54it/s]Extractor Predicting: 109it [01:06,  1.58it/s]Extractor Predicting: 110it [01:07,  1.57it/s]Extractor Predicting: 111it [01:08,  1.55it/s]Extractor Predicting: 112it [01:08,  1.59it/s]Extractor Predicting: 113it [01:09,  1.60it/s]Extractor Predicting: 114it [01:10,  1.59it/s]Extractor Predicting: 115it [01:10,  1.62it/s]Extractor Predicting: 116it [01:11,  1.60it/s]Extractor Predicting: 117it [01:11,  1.64it/s]Extractor Predicting: 118it [01:12,  1.62it/s]Extractor Predicting: 119it [01:13,  1.60it/s]Extractor Predicting: 120it [01:13,  1.65it/s]Extractor Predicting: 121it [01:14,  1.63it/s]Extractor Predicting: 122it [01:14,  1.65it/s]Extractor Predicting: 123it [01:15,  1.62it/s]Extractor Predicting: 124it [01:16,  1.61it/s]Extractor Predicting: 125it [01:16,  1.60it/s]Extractor Predicting: 126it [01:17,  1.57it/s]Extractor Predicting: 127it [01:18,  1.56it/s]Extractor Predicting: 128it [01:18,  1.56it/s]Extractor Predicting: 129it [01:19,  1.55it/s]Extractor Predicting: 130it [01:20,  1.54it/s]Extractor Predicting: 131it [01:20,  1.50it/s]Extractor Predicting: 132it [01:21,  1.52it/s]Extractor Predicting: 133it [01:22,  1.53it/s]Extractor Predicting: 134it [01:22,  1.56it/s]Extractor Predicting: 135it [01:23,  1.58it/s]Extractor Predicting: 136it [01:23,  1.57it/s]Extractor Predicting: 137it [01:24,  1.58it/s]Extractor Predicting: 138it [01:25,  1.58it/s]Extractor Predicting: 139it [01:25,  1.56it/s]Extractor Predicting: 140it [01:26,  1.57it/s]Extractor Predicting: 141it [01:27,  1.56it/s]Extractor Predicting: 142it [01:27,  1.59it/s]Extractor Predicting: 143it [01:28,  1.57it/s]Extractor Predicting: 144it [01:28,  1.61it/s]Extractor Predicting: 144it [01:28,  1.62it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.dense.bias', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.decoder.weight', 'predictions.dense.weight', 'predictions.decoder.bias', 'predictions.LayerNorm.bias', 'predictions.dense.bias', 'predictions.LayerNorm.weight', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/results_single_is_eval_False.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl'}}
+predict vocab size: 346
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 446, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.33it/s]Extractor Predicting: 1it [00:00,  1.33it/s]
+{
+  "path_pred": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "multi",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_train_large/unseen_5_seed_2/extractor/results_multi_is_eval_False.json"
+}
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/rnn.py:70: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
+  "num_layers={}".format(dropout, num_layers))
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.bias', 'predictions.dense.weight', 'predictions.LayerNorm.bias', 'predictions.decoder.weight', 'predictions.LayerNorm.weight', 'predictions.decoder.bias', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1113: UserWarning: Using a non-full backward hook when the forward contains multiple autograd Nodes is deprecated and will be removed in future versions. This hook will be missing some grad_input. Please use register_full_backward_hook to get the documented behavior.
+  warnings.warn("Using a non-full backward hook when the forward contains multiple autograd Nodes "
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1190: UserWarning: operator() sees varying value in profiling, ignoring and this should be handled by GUARD logic (Triggered internally at ../torch/csrc/jit/codegen/cuda/parser.cpp:3668.)
+  return forward_call(*input, **kwargs)
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.bias', 'predictions.dense.weight', 'predictions.LayerNorm.bias', 'predictions.decoder.weight', 'predictions.LayerNorm.weight', 'predictions.decoder.bias', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/wiki/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'data_name': 'wiki', 'split': 'unseen_5_seed_2', 'type': 'train', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+fit {'path_train': 'zero_rte/wiki/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl'}
+train vocab size: 88966
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 89066, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/data/train.txt
+{"train_model: args: ModelArguments(model_class='JointModel', model_read_ckpt='', model_write_ckpt='outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/model', pretrained_wv='outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/data/train.txt', label_config=None, batch_size=24, evaluate_interval=500, max_steps=10000, max_epoches=20, decay_rate=0.05, token_emb_dim=100, char_encoder='lstm', char_emb_dim=30, cased=False, hidden_dim=200, num_layers=3, crf=None, loss_reduction='sum', maxlen=None, dropout=0.5, optimizer='adam', lr=0.001, vocab_size=89066, vocab_file=None, ner_tag_vocab_size=64, re_tag_vocab_size=250, lm_emb_dim=1024, lm_emb_path='albert-large-v2', head_emb_dim=384, tag_form='iob2', warm_steps=1000, grad_period=1, device='cuda', seed=42)"}
+warm up: learning rate was adjusted to 1e-06
+warm up: learning rate was adjusted to 1.1e-05
+warm up: learning rate was adjusted to 2.1000000000000002e-05
+warm up: learning rate was adjusted to 3.1e-05
+warm up: learning rate was adjusted to 4.1e-05
+warm up: learning rate was adjusted to 5.1000000000000006e-05
+warm up: learning rate was adjusted to 6.1e-05
+warm up: learning rate was adjusted to 7.1e-05
+warm up: learning rate was adjusted to 8.1e-05
+warm up: learning rate was adjusted to 9.1e-05
+g_step 100, step 100, avg_time 1.368, loss:50893.8723
+warm up: learning rate was adjusted to 0.000101
+warm up: learning rate was adjusted to 0.000111
+warm up: learning rate was adjusted to 0.000121
+warm up: learning rate was adjusted to 0.000131
+warm up: learning rate was adjusted to 0.000141
+warm up: learning rate was adjusted to 0.00015099999999999998
+warm up: learning rate was adjusted to 0.000161
+warm up: learning rate was adjusted to 0.000171
+warm up: learning rate was adjusted to 0.00018099999999999998
+warm up: learning rate was adjusted to 0.000191
+g_step 200, step 200, avg_time 1.030, loss:2986.4126
+warm up: learning rate was adjusted to 0.000201
+warm up: learning rate was adjusted to 0.000211
+warm up: learning rate was adjusted to 0.000221
+warm up: learning rate was adjusted to 0.000231
+warm up: learning rate was adjusted to 0.000241
+warm up: learning rate was adjusted to 0.000251
+warm up: learning rate was adjusted to 0.000261
+warm up: learning rate was adjusted to 0.00027100000000000003
+warm up: learning rate was adjusted to 0.00028100000000000005
+warm up: learning rate was adjusted to 0.00029099999999999997
+g_step 300, step 300, avg_time 1.024, loss:2460.8858
+warm up: learning rate was adjusted to 0.000301
+warm up: learning rate was adjusted to 0.000311
+warm up: learning rate was adjusted to 0.000321
+warm up: learning rate was adjusted to 0.000331
+warm up: learning rate was adjusted to 0.00034100000000000005
+warm up: learning rate was adjusted to 0.000351
+warm up: learning rate was adjusted to 0.000361
+warm up: learning rate was adjusted to 0.000371
+warm up: learning rate was adjusted to 0.000381
+warm up: learning rate was adjusted to 0.000391
+g_step 400, step 400, avg_time 1.032, loss:2450.6714
+warm up: learning rate was adjusted to 0.00040100000000000004
+warm up: learning rate was adjusted to 0.000411
+warm up: learning rate was adjusted to 0.000421
+warm up: learning rate was adjusted to 0.000431
+warm up: learning rate was adjusted to 0.000441
+warm up: learning rate was adjusted to 0.000451
+warm up: learning rate was adjusted to 0.00046100000000000004
+warm up: learning rate was adjusted to 0.000471
+warm up: learning rate was adjusted to 0.000481
+warm up: learning rate was adjusted to 0.000491
+g_step 500, step 500, avg_time 1.036, loss:2347.7292
+>> valid entity prec:0.3597, rec:0.5774, f1:0.4432
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max relation f1 on valid!
+new max relation f1 with NER on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+warm up: learning rate was adjusted to 0.000501
+warm up: learning rate was adjusted to 0.0005110000000000001
+warm up: learning rate was adjusted to 0.000521
+warm up: learning rate was adjusted to 0.000531
+warm up: learning rate was adjusted to 0.000541
+warm up: learning rate was adjusted to 0.0005510000000000001
+warm up: learning rate was adjusted to 0.0005610000000000001
+warm up: learning rate was adjusted to 0.0005710000000000001
+warm up: learning rate was adjusted to 0.0005809999999999999
+warm up: learning rate was adjusted to 0.0005909999999999999
+g_step 600, step 600, avg_time 2.804, loss:2372.9635
+warm up: learning rate was adjusted to 0.000601
+warm up: learning rate was adjusted to 0.000611
+warm up: learning rate was adjusted to 0.000621
+warm up: learning rate was adjusted to 0.000631
+warm up: learning rate was adjusted to 0.000641
+warm up: learning rate was adjusted to 0.000651
+warm up: learning rate was adjusted to 0.000661
+warm up: learning rate was adjusted to 0.000671
+warm up: learning rate was adjusted to 0.0006810000000000001
+warm up: learning rate was adjusted to 0.0006910000000000001
+g_step 700, step 700, avg_time 1.040, loss:2149.1921
+warm up: learning rate was adjusted to 0.000701
+warm up: learning rate was adjusted to 0.0007109999999999999
+warm up: learning rate was adjusted to 0.000721
+warm up: learning rate was adjusted to 0.000731
+warm up: learning rate was adjusted to 0.000741
+warm up: learning rate was adjusted to 0.000751
+warm up: learning rate was adjusted to 0.000761
+warm up: learning rate was adjusted to 0.000771
+warm up: learning rate was adjusted to 0.000781
+warm up: learning rate was adjusted to 0.000791
+g_step 800, step 800, avg_time 1.036, loss:2063.4176
+warm up: learning rate was adjusted to 0.0008010000000000001
+warm up: learning rate was adjusted to 0.0008110000000000001
+warm up: learning rate was adjusted to 0.0008210000000000001
+warm up: learning rate was adjusted to 0.000831
+warm up: learning rate was adjusted to 0.000841
+warm up: learning rate was adjusted to 0.000851
+warm up: learning rate was adjusted to 0.000861
+warm up: learning rate was adjusted to 0.000871
+warm up: learning rate was adjusted to 0.0008810000000000001
+warm up: learning rate was adjusted to 0.000891
+g_step 900, step 900, avg_time 1.033, loss:1974.7002
+warm up: learning rate was adjusted to 0.000901
+warm up: learning rate was adjusted to 0.000911
+warm up: learning rate was adjusted to 0.000921
+warm up: learning rate was adjusted to 0.0009310000000000001
+warm up: learning rate was adjusted to 0.0009410000000000001
+warm up: learning rate was adjusted to 0.000951
+warm up: learning rate was adjusted to 0.0009609999999999999
+warm up: learning rate was adjusted to 0.000971
+warm up: learning rate was adjusted to 0.0009809999999999999
+warm up: learning rate was adjusted to 0.000991
+g_step 1000, step 1000, avg_time 1.049, loss:1829.4860
+learning rate was adjusted to 0.0009523809523809524
+>> valid entity prec:0.4837, rec:0.3259, f1:0.3895
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 1100, step 1100, avg_time 2.688, loss:1780.5269
+g_step 1200, step 1200, avg_time 1.043, loss:1721.5538
+g_step 1300, step 1300, avg_time 1.043, loss:1703.5228
+g_step 1400, step 1400, avg_time 1.044, loss:1674.9561
+g_step 1500, step 1500, avg_time 1.033, loss:1626.9517
+>> valid entity prec:0.4068, rec:0.6212, f1:0.4916
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+g_step 1600, step 1600, avg_time 2.726, loss:1502.7186
+g_step 1700, step 1700, avg_time 1.025, loss:1487.6241
+g_step 1800, step 1800, avg_time 1.050, loss:1513.1210
+g_step 1900, step 1900, avg_time 1.037, loss:1501.7248
+g_step 2000, step 2000, avg_time 1.048, loss:1402.8393
+learning rate was adjusted to 0.0009090909090909091
+>> valid entity prec:0.4245, rec:0.4022, f1:0.4131
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 2100, step 2100, avg_time 2.709, loss:1470.4220
+g_step 2200, step 2200, avg_time 1.058, loss:1445.3846
+g_step 2300, step 2300, avg_time 1.038, loss:1449.3294
+g_step 2400, step 2400, avg_time 1.049, loss:1392.1851
+g_step 2500, step 2500, avg_time 1.032, loss:1338.8514
+>> valid entity prec:0.4199, rec:0.6011, f1:0.4944
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+g_step 2600, step 2600, avg_time 2.738, loss:1327.9514
+g_step 2700, step 2700, avg_time 1.043, loss:1349.5127
+g_step 2800, step 2800, avg_time 1.043, loss:1308.2490
+g_step 2900, step 2900, avg_time 1.035, loss:1380.0642
+g_step 3000, step 3000, avg_time 1.044, loss:1326.0312
+learning rate was adjusted to 0.0008695652173913044
+>> valid entity prec:0.4338, rec:0.5856, f1:0.4984
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+g_step 3100, step 3100, avg_time 2.730, loss:1325.4761
+g_step 3200, step 3200, avg_time 1.050, loss:1337.4098
+g_step 3300, step 3300, avg_time 1.036, loss:1275.7234
+g_step 3400, step 3400, avg_time 1.042, loss:1304.5709
+g_step 3500, step 3500, avg_time 1.060, loss:1236.9664
+>> valid entity prec:0.4879, rec:0.3518, f1:0.4088
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 3600, step 4, avg_time 2.696, loss:1296.0724
+g_step 3700, step 104, avg_time 1.042, loss:1233.4655
+g_step 3800, step 204, avg_time 1.055, loss:1274.4091
+g_step 3900, step 304, avg_time 1.051, loss:1237.2286
+g_step 4000, step 404, avg_time 1.035, loss:1193.7611
+learning rate was adjusted to 0.0008333333333333334
+>> valid entity prec:0.4438, rec:0.6587, f1:0.5303
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+g_step 4100, step 504, avg_time 2.750, loss:1246.5886
+g_step 4200, step 604, avg_time 1.043, loss:1196.7447
+g_step 4300, step 704, avg_time 1.037, loss:1173.3171
+g_step 4400, step 804, avg_time 1.026, loss:1275.6610
+g_step 4500, step 904, avg_time 1.042, loss:1236.2472
+>> valid entity prec:0.4996, rec:0.4752, f1:0.4871
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 4600, step 1004, avg_time 2.723, loss:1241.6805
+g_step 4700, step 1104, avg_time 1.037, loss:1203.8505
+g_step 4800, step 1204, avg_time 1.036, loss:1216.3547
+g_step 4900, step 1304, avg_time 1.032, loss:1192.1966
+g_step 5000, step 1404, avg_time 1.043, loss:1180.4583
+learning rate was adjusted to 0.0008
+>> valid entity prec:0.4286, rec:0.5793, f1:0.4927
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 5100, step 1504, avg_time 2.734, loss:1161.7638
+g_step 5200, step 1604, avg_time 1.037, loss:1169.0676
+g_step 5300, step 1704, avg_time 1.041, loss:1146.4826
+g_step 5400, step 1804, avg_time 1.050, loss:1140.2611
+g_step 5500, step 1904, avg_time 1.045, loss:1168.3439
+>> valid entity prec:0.4915, rec:0.4050, f1:0.4441
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 5600, step 2004, avg_time 2.725, loss:1155.4427
+g_step 5700, step 2104, avg_time 1.052, loss:1148.0915
+g_step 5800, step 2204, avg_time 1.039, loss:1142.7830
+g_step 5900, step 2304, avg_time 1.044, loss:1188.8048
+g_step 6000, step 2404, avg_time 1.045, loss:1140.6909
+learning rate was adjusted to 0.0007692307692307692
+>> valid entity prec:0.4565, rec:0.6065, f1:0.5209
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 6100, step 2504, avg_time 2.730, loss:1158.9791
+g_step 6200, step 2604, avg_time 1.046, loss:1141.7432
+g_step 6300, step 2704, avg_time 1.033, loss:1130.7797
+g_step 6400, step 2804, avg_time 1.051, loss:1140.2611
+g_step 6500, step 2904, avg_time 1.043, loss:1135.1592
+>> valid entity prec:0.4784, rec:0.5639, f1:0.5176
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 6600, step 3004, avg_time 2.722, loss:1107.6699
+g_step 6700, step 3104, avg_time 1.048, loss:1092.1184
+g_step 6800, step 3204, avg_time 1.038, loss:1196.3495
+g_step 6900, step 3304, avg_time 1.041, loss:1123.2437
+g_step 7000, step 3404, avg_time 1.041, loss:1145.6843
+learning rate was adjusted to 0.0007407407407407407
+>> valid entity prec:0.4460, rec:0.5903, f1:0.5081
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 7100, step 3504, avg_time 2.734, loss:1150.4132
+g_step 7200, step 8, avg_time 1.046, loss:1088.3398
+g_step 7300, step 108, avg_time 1.046, loss:1099.4020
+g_step 7400, step 208, avg_time 1.042, loss:1135.6693
+g_step 7500, step 308, avg_time 1.042, loss:1112.5194
+>> valid entity prec:0.4767, rec:0.4848, f1:0.4807
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 7600, step 408, avg_time 2.712, loss:1018.7361
+g_step 7700, step 508, avg_time 1.038, loss:1062.6953
+g_step 7800, step 608, avg_time 1.045, loss:1106.6951
+g_step 7900, step 708, avg_time 1.040, loss:1048.0724
+g_step 8000, step 808, avg_time 1.044, loss:1055.7875
+learning rate was adjusted to 0.0007142857142857144
+>> valid entity prec:0.4372, rec:0.5903, f1:0.5023
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 8100, step 908, avg_time 2.733, loss:1135.5778
+g_step 8200, step 1008, avg_time 1.051, loss:1121.0742
+g_step 8300, step 1108, avg_time 1.041, loss:1137.1181
+g_step 8400, step 1208, avg_time 1.040, loss:1091.5806
+g_step 8500, step 1308, avg_time 1.044, loss:1084.2256
+>> valid entity prec:0.4218, rec:0.6668, f1:0.5167
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 8600, step 1408, avg_time 2.735, loss:1094.5063
+g_step 8700, step 1508, avg_time 1.047, loss:1088.0357
+g_step 8800, step 1608, avg_time 1.041, loss:1140.7792
+g_step 8900, step 1708, avg_time 1.040, loss:1050.5315
+g_step 9000, step 1808, avg_time 1.048, loss:1058.0608
+learning rate was adjusted to 0.0006896551724137932
+>> valid entity prec:0.4673, rec:0.4862, f1:0.4765
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 9100, step 1908, avg_time 2.716, loss:1108.6556
+g_step 9200, step 2008, avg_time 1.043, loss:1044.5925
+g_step 9300, step 2108, avg_time 1.065, loss:1076.9345
+g_step 9400, step 2208, avg_time 1.060, loss:1052.4031
+g_step 9500, step 2308, avg_time 1.043, loss:1056.3463
+>> valid entity prec:0.4918, rec:0.5000, f1:0.4959
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+g_step 9600, step 2408, avg_time 2.700, loss:1067.0288
+g_step 9700, step 2508, avg_time 1.045, loss:1002.6585
+g_step 9800, step 2608, avg_time 1.026, loss:1056.6474
+g_step 9900, step 2708, avg_time 1.026, loss:1055.4812
+g_step 10000, step 2808, avg_time 1.023, loss:1036.0266
+learning rate was adjusted to 0.0006666666666666666
+>> valid entity prec:0.4571, rec:0.6011, f1:0.5193
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+reach max_steps, stop training
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'labels': ['made from material', 'manufacturer', 'mouth of the watercourse', 'official language', 'sports discipline competed in'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl', 'path_out': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl'}}
+predict vocab size: 13127
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 13227, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:06,  6.09s/it]Extractor Predicting: 2it [00:07,  3.16s/it]Extractor Predicting: 3it [00:08,  2.31s/it]Extractor Predicting: 4it [00:09,  1.82s/it]Extractor Predicting: 5it [00:10,  1.39s/it]Extractor Predicting: 6it [00:10,  1.14s/it]Extractor Predicting: 7it [00:11,  1.02it/s]Extractor Predicting: 8it [00:12,  1.02s/it]Extractor Predicting: 9it [00:13,  1.07s/it]Extractor Predicting: 10it [00:14,  1.06it/s]Extractor Predicting: 11it [00:15,  1.18it/s]Extractor Predicting: 12it [00:15,  1.25it/s]Extractor Predicting: 13it [00:16,  1.33it/s]Extractor Predicting: 14it [00:17,  1.38it/s]Extractor Predicting: 15it [00:17,  1.43it/s]Extractor Predicting: 16it [00:18,  1.47it/s]Extractor Predicting: 17it [00:19,  1.47it/s]Extractor Predicting: 18it [00:19,  1.51it/s]Extractor Predicting: 19it [00:20,  1.49it/s]Extractor Predicting: 20it [00:20,  1.51it/s]Extractor Predicting: 21it [00:21,  1.48it/s]Extractor Predicting: 22it [00:22,  1.49it/s]Extractor Predicting: 23it [00:23,  1.47it/s]Extractor Predicting: 24it [00:23,  1.50it/s]Extractor Predicting: 25it [00:24,  1.49it/s]Extractor Predicting: 26it [00:25,  1.49it/s]Extractor Predicting: 27it [00:25,  1.52it/s]Extractor Predicting: 28it [00:26,  1.51it/s]Extractor Predicting: 29it [00:26,  1.53it/s]Extractor Predicting: 30it [00:27,  1.54it/s]Extractor Predicting: 31it [00:28,  1.51it/s]Extractor Predicting: 32it [00:28,  1.51it/s]Extractor Predicting: 33it [00:29,  1.52it/s]Extractor Predicting: 34it [00:30,  1.47it/s]Extractor Predicting: 35it [00:30,  1.50it/s]Extractor Predicting: 36it [00:31,  1.53it/s]Extractor Predicting: 37it [00:32,  1.52it/s]Extractor Predicting: 38it [00:32,  1.50it/s]Extractor Predicting: 39it [00:33,  1.48it/s]Extractor Predicting: 40it [00:34,  1.48it/s]Extractor Predicting: 41it [00:35,  1.06it/s]Extractor Predicting: 42it [00:36,  1.16it/s]Extractor Predicting: 43it [00:37,  1.23it/s]Extractor Predicting: 44it [00:37,  1.28it/s]Extractor Predicting: 45it [00:38,  1.31it/s]Extractor Predicting: 46it [00:39,  1.35it/s]Extractor Predicting: 47it [00:40,  1.36it/s]Extractor Predicting: 48it [00:40,  1.38it/s]Extractor Predicting: 49it [00:41,  1.45it/s]Extractor Predicting: 50it [00:42,  1.44it/s]Extractor Predicting: 51it [00:42,  1.47it/s]Extractor Predicting: 52it [00:43,  1.44it/s]Extractor Predicting: 53it [00:44,  1.43it/s]Extractor Predicting: 54it [00:44,  1.44it/s]Extractor Predicting: 55it [00:45,  1.44it/s]Extractor Predicting: 56it [00:46,  1.47it/s]Extractor Predicting: 57it [00:46,  1.45it/s]Extractor Predicting: 58it [00:47,  1.44it/s]Extractor Predicting: 59it [00:48,  1.48it/s]Extractor Predicting: 60it [00:48,  1.46it/s]Extractor Predicting: 61it [00:49,  1.43it/s]Extractor Predicting: 62it [00:50,  1.41it/s]Extractor Predicting: 63it [00:51,  1.41it/s]Extractor Predicting: 64it [00:51,  1.39it/s]Extractor Predicting: 65it [00:52,  1.39it/s]Extractor Predicting: 66it [00:53,  1.43it/s]Extractor Predicting: 67it [00:53,  1.44it/s]Extractor Predicting: 68it [00:54,  1.47it/s]Extractor Predicting: 69it [00:55,  1.48it/s]Extractor Predicting: 70it [00:55,  1.47it/s]Extractor Predicting: 71it [00:56,  1.49it/s]Extractor Predicting: 72it [00:57,  1.54it/s]Extractor Predicting: 73it [00:57,  1.51it/s]Extractor Predicting: 74it [00:58,  1.53it/s]Extractor Predicting: 75it [00:59,  1.53it/s]Extractor Predicting: 76it [00:59,  1.50it/s]Extractor Predicting: 77it [01:00,  1.49it/s]Extractor Predicting: 78it [01:01,  1.51it/s]Extractor Predicting: 79it [01:01,  1.51it/s]Extractor Predicting: 80it [01:02,  1.51it/s]Extractor Predicting: 81it [01:03,  1.49it/s]Extractor Predicting: 82it [01:03,  1.48it/s]Extractor Predicting: 83it [01:04,  1.48it/s]Extractor Predicting: 84it [01:05,  1.52it/s]Extractor Predicting: 85it [01:05,  1.57it/s]Extractor Predicting: 86it [01:06,  1.56it/s]Extractor Predicting: 87it [01:07,  1.58it/s]Extractor Predicting: 88it [01:07,  1.50it/s]Extractor Predicting: 89it [01:08,  1.49it/s]Extractor Predicting: 90it [01:09,  1.46it/s]Extractor Predicting: 91it [01:09,  1.48it/s]Extractor Predicting: 92it [01:10,  1.48it/s]Extractor Predicting: 93it [01:11,  1.37it/s]Extractor Predicting: 94it [01:12,  1.41it/s]Extractor Predicting: 95it [01:12,  1.43it/s]Extractor Predicting: 96it [01:13,  1.45it/s]Extractor Predicting: 97it [01:14,  1.47it/s]Extractor Predicting: 98it [01:14,  1.44it/s]Extractor Predicting: 99it [01:15,  1.45it/s]Extractor Predicting: 100it [01:16,  1.43it/s]Extractor Predicting: 101it [01:16,  1.42it/s]Extractor Predicting: 102it [01:17,  1.45it/s]Extractor Predicting: 103it [01:18,  1.43it/s]Extractor Predicting: 104it [01:18,  1.46it/s]Extractor Predicting: 105it [01:19,  1.50it/s]Extractor Predicting: 106it [01:20,  1.44it/s]Extractor Predicting: 107it [01:20,  1.48it/s]Extractor Predicting: 108it [01:21,  1.50it/s]Extractor Predicting: 109it [01:22,  1.47it/s]Extractor Predicting: 110it [01:22,  1.47it/s]Extractor Predicting: 111it [01:23,  1.45it/s]Extractor Predicting: 112it [01:24,  1.44it/s]Extractor Predicting: 113it [01:25,  1.45it/s]Extractor Predicting: 114it [01:25,  1.46it/s]Extractor Predicting: 115it [01:26,  1.45it/s]Extractor Predicting: 116it [01:27,  1.45it/s]Extractor Predicting: 117it [01:27,  1.48it/s]Extractor Predicting: 118it [01:28,  1.48it/s]Extractor Predicting: 119it [01:29,  1.53it/s]Extractor Predicting: 120it [01:29,  1.52it/s]Extractor Predicting: 121it [01:30,  1.51it/s]Extractor Predicting: 122it [01:31,  1.49it/s]Extractor Predicting: 123it [01:31,  1.47it/s]Extractor Predicting: 124it [01:32,  1.50it/s]Extractor Predicting: 125it [01:33,  1.46it/s]Extractor Predicting: 126it [01:33,  1.50it/s]Extractor Predicting: 127it [01:34,  1.52it/s]Extractor Predicting: 128it [01:35,  1.50it/s]Extractor Predicting: 129it [01:35,  1.49it/s]Extractor Predicting: 130it [01:36,  1.46it/s]Extractor Predicting: 131it [01:37,  1.46it/s]Extractor Predicting: 132it [01:37,  1.49it/s]Extractor Predicting: 133it [01:38,  1.50it/s]Extractor Predicting: 134it [01:39,  1.47it/s]Extractor Predicting: 135it [01:39,  1.47it/s]Extractor Predicting: 136it [01:40,  1.48it/s]Extractor Predicting: 137it [01:41,  1.49it/s]Extractor Predicting: 138it [01:41,  1.48it/s]Extractor Predicting: 139it [01:42,  1.46it/s]Extractor Predicting: 140it [01:43,  1.43it/s]Extractor Predicting: 141it [01:44,  1.42it/s]Extractor Predicting: 142it [01:44,  1.41it/s]Extractor Predicting: 143it [01:45,  1.43it/s]Extractor Predicting: 144it [01:46,  1.41it/s]Extractor Predicting: 145it [01:46,  1.42it/s]Extractor Predicting: 146it [01:47,  1.37it/s]Extractor Predicting: 147it [01:48,  1.38it/s]Extractor Predicting: 148it [01:49,  1.40it/s]Extractor Predicting: 149it [01:49,  1.43it/s]Extractor Predicting: 150it [01:50,  1.42it/s]Extractor Predicting: 151it [01:51,  1.45it/s]Extractor Predicting: 152it [01:51,  1.44it/s]Extractor Predicting: 153it [01:52,  1.47it/s]Extractor Predicting: 154it [01:53,  1.46it/s]Extractor Predicting: 155it [01:53,  1.45it/s]Extractor Predicting: 156it [01:54,  1.43it/s]Extractor Predicting: 157it [01:55,  1.45it/s]Extractor Predicting: 158it [01:55,  1.46it/s]Extractor Predicting: 159it [01:56,  1.45it/s]Extractor Predicting: 160it [01:57,  1.45it/s]Extractor Predicting: 161it [01:57,  1.47it/s]Extractor Predicting: 162it [01:58,  1.46it/s]Extractor Predicting: 163it [01:59,  1.42it/s]Extractor Predicting: 164it [02:00,  1.42it/s]Extractor Predicting: 165it [02:00,  1.43it/s]Extractor Predicting: 166it [02:01,  1.41it/s]Extractor Predicting: 167it [02:02,  1.42it/s]Extractor Predicting: 168it [02:03,  1.31it/s]Extractor Predicting: 169it [02:03,  1.35it/s]Extractor Predicting: 170it [02:04,  1.37it/s]Extractor Predicting: 171it [02:04,  1.62it/s]Extractor Predicting: 171it [02:04,  1.37it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.bias', 'predictions.dense.weight', 'predictions.LayerNorm.bias', 'predictions.decoder.weight', 'predictions.LayerNorm.weight', 'predictions.decoder.bias', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl",
+  "path_gold": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "all_single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/results_all_single_is_eval_True.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl'}}
+predict vocab size: 11332
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 11432, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.59it/s]Extractor Predicting: 2it [00:01,  1.58it/s]Extractor Predicting: 3it [00:01,  1.50it/s]Extractor Predicting: 4it [00:02,  1.49it/s]Extractor Predicting: 5it [00:03,  1.50it/s]Extractor Predicting: 6it [00:03,  1.51it/s]Extractor Predicting: 7it [00:04,  1.48it/s]Extractor Predicting: 8it [00:05,  1.48it/s]Extractor Predicting: 9it [00:06,  1.44it/s]Extractor Predicting: 10it [00:06,  1.39it/s]Extractor Predicting: 11it [00:07,  1.44it/s]Extractor Predicting: 12it [00:08,  1.49it/s]Extractor Predicting: 13it [00:08,  1.47it/s]Extractor Predicting: 14it [00:09,  1.48it/s]Extractor Predicting: 15it [00:10,  1.46it/s]Extractor Predicting: 16it [00:10,  1.48it/s]Extractor Predicting: 17it [00:11,  1.51it/s]Extractor Predicting: 18it [00:12,  1.52it/s]Extractor Predicting: 19it [00:12,  1.54it/s]Extractor Predicting: 20it [00:13,  1.52it/s]Extractor Predicting: 21it [00:14,  1.54it/s]Extractor Predicting: 22it [00:14,  1.52it/s]Extractor Predicting: 23it [00:15,  1.52it/s]Extractor Predicting: 24it [00:16,  1.48it/s]Extractor Predicting: 25it [00:16,  1.51it/s]Extractor Predicting: 26it [00:17,  1.53it/s]Extractor Predicting: 27it [00:17,  1.54it/s]Extractor Predicting: 28it [00:18,  1.53it/s]Extractor Predicting: 29it [00:19,  1.52it/s]Extractor Predicting: 30it [00:19,  1.51it/s]Extractor Predicting: 31it [00:20,  1.50it/s]Extractor Predicting: 32it [00:21,  1.50it/s]Extractor Predicting: 33it [00:21,  1.51it/s]Extractor Predicting: 34it [00:22,  1.50it/s]Extractor Predicting: 35it [00:23,  1.50it/s]Extractor Predicting: 36it [00:24,  1.49it/s]Extractor Predicting: 37it [00:24,  1.49it/s]Extractor Predicting: 38it [00:25,  1.50it/s]Extractor Predicting: 39it [00:26,  1.48it/s]Extractor Predicting: 40it [00:26,  1.50it/s]Extractor Predicting: 41it [00:27,  1.51it/s]Extractor Predicting: 42it [00:27,  1.51it/s]Extractor Predicting: 43it [00:28,  1.51it/s]Extractor Predicting: 44it [00:29,  1.52it/s]Extractor Predicting: 45it [00:29,  1.52it/s]Extractor Predicting: 46it [00:30,  1.53it/s]Extractor Predicting: 47it [00:31,  1.49it/s]Extractor Predicting: 48it [00:31,  1.49it/s]Extractor Predicting: 49it [00:32,  1.49it/s]Extractor Predicting: 50it [00:33,  1.49it/s]Extractor Predicting: 51it [00:33,  1.50it/s]Extractor Predicting: 52it [00:34,  1.51it/s]Extractor Predicting: 53it [00:35,  1.50it/s]Extractor Predicting: 54it [00:36,  1.48it/s]Extractor Predicting: 55it [00:36,  1.46it/s]Extractor Predicting: 56it [00:37,  1.48it/s]Extractor Predicting: 57it [00:38,  1.49it/s]Extractor Predicting: 58it [00:38,  1.36it/s]Extractor Predicting: 59it [00:39,  1.40it/s]Extractor Predicting: 60it [00:40,  1.40it/s]Extractor Predicting: 61it [00:40,  1.42it/s]Extractor Predicting: 62it [00:41,  1.42it/s]Extractor Predicting: 63it [00:42,  1.46it/s]Extractor Predicting: 64it [00:43,  1.46it/s]Extractor Predicting: 65it [00:43,  1.48it/s]Extractor Predicting: 66it [00:44,  1.48it/s]Extractor Predicting: 67it [00:44,  1.50it/s]Extractor Predicting: 68it [00:45,  1.51it/s]Extractor Predicting: 69it [00:46,  1.53it/s]Extractor Predicting: 70it [00:46,  1.51it/s]Extractor Predicting: 71it [00:47,  1.45it/s]Extractor Predicting: 72it [00:48,  1.47it/s]Extractor Predicting: 73it [00:49,  1.46it/s]Extractor Predicting: 74it [00:49,  1.48it/s]Extractor Predicting: 75it [00:50,  1.49it/s]Extractor Predicting: 76it [00:51,  1.41it/s]Extractor Predicting: 77it [00:51,  1.47it/s]Extractor Predicting: 78it [00:52,  1.50it/s]Extractor Predicting: 79it [00:53,  1.49it/s]Extractor Predicting: 80it [00:53,  1.51it/s]Extractor Predicting: 81it [00:54,  1.52it/s]Extractor Predicting: 82it [00:55,  1.53it/s]Extractor Predicting: 83it [00:55,  1.53it/s]Extractor Predicting: 84it [00:56,  1.51it/s]Extractor Predicting: 85it [00:57,  1.51it/s]Extractor Predicting: 86it [00:57,  1.53it/s]Extractor Predicting: 87it [00:58,  1.50it/s]Extractor Predicting: 88it [00:59,  1.52it/s]Extractor Predicting: 89it [00:59,  1.51it/s]Extractor Predicting: 90it [01:00,  1.47it/s]Extractor Predicting: 91it [01:01,  1.49it/s]Extractor Predicting: 92it [01:01,  1.48it/s]Extractor Predicting: 93it [01:02,  1.49it/s]Extractor Predicting: 94it [01:03,  1.48it/s]Extractor Predicting: 95it [01:03,  1.46it/s]Extractor Predicting: 96it [01:04,  1.43it/s]Extractor Predicting: 97it [01:05,  1.46it/s]Extractor Predicting: 98it [01:05,  1.47it/s]Extractor Predicting: 99it [01:06,  1.55it/s]Extractor Predicting: 100it [01:07,  1.55it/s]Extractor Predicting: 101it [01:07,  1.52it/s]Extractor Predicting: 102it [01:08,  1.54it/s]Extractor Predicting: 103it [01:09,  1.54it/s]Extractor Predicting: 104it [01:09,  1.55it/s]Extractor Predicting: 105it [01:10,  1.53it/s]Extractor Predicting: 106it [01:10,  1.55it/s]Extractor Predicting: 107it [01:11,  1.56it/s]Extractor Predicting: 108it [01:12,  1.54it/s]Extractor Predicting: 109it [01:12,  1.49it/s]Extractor Predicting: 110it [01:14,  1.21it/s]Extractor Predicting: 111it [01:14,  1.25it/s]Extractor Predicting: 112it [01:15,  1.31it/s]Extractor Predicting: 113it [01:16,  1.38it/s]Extractor Predicting: 114it [01:16,  1.42it/s]Extractor Predicting: 115it [01:17,  1.44it/s]Extractor Predicting: 116it [01:18,  1.46it/s]Extractor Predicting: 117it [01:18,  1.46it/s]Extractor Predicting: 118it [01:19,  1.43it/s]Extractor Predicting: 119it [01:20,  1.45it/s]Extractor Predicting: 120it [01:21,  1.43it/s]Extractor Predicting: 121it [01:21,  1.42it/s]Extractor Predicting: 122it [01:22,  1.45it/s]Extractor Predicting: 123it [01:23,  1.47it/s]Extractor Predicting: 124it [01:23,  1.46it/s]Extractor Predicting: 125it [01:24,  1.78it/s]Extractor Predicting: 125it [01:24,  1.49it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.bias', 'cls.seq_relationship.weight', 'cls.predictions.transform.dense.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.bias']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.bias', 'predictions.dense.weight', 'predictions.LayerNorm.bias', 'predictions.decoder.weight', 'predictions.LayerNorm.weight', 'predictions.decoder.bias', 'predictions.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/results_single_is_eval_False.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl'}}
+predict vocab size: 1292
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 1392, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.28it/s]Extractor Predicting: 2it [00:01,  1.34it/s]Extractor Predicting: 3it [00:02,  1.36it/s]Extractor Predicting: 4it [00:02,  1.40it/s]Extractor Predicting: 5it [00:03,  1.39it/s]Extractor Predicting: 6it [00:03,  1.83it/s]Extractor Predicting: 6it [00:03,  1.56it/s]
+{
+  "path_pred": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "multi",
+  "limit": 0,
+  "path_results": "outputs/wrapper/wiki_train_large/unseen_5_seed_2/extractor/results_multi_is_eval_False.json"
+}
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/fewrel/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'data_name': 'fewrel', 'split': 'unseen_5_seed_2', 'type': 'synthetic', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+fit {'path_train': 'outputs/wrapper/fewrel/unseen_5_seed_2/generator/synthetic.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl'}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'labels': ['followed by', 'heritage designation', 'manufacturer', 'operator', 'publisher'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/wiki/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'data_name': 'wiki', 'split': 'unseen_5_seed_2', 'type': 'synthetic', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+fit {'path_train': 'outputs/wrapper/wiki/unseen_5_seed_2/generator/synthetic.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl'}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'labels': ['made from material', 'manufacturer', 'mouth of the watercourse', 'official language', 'sports discipline competed in'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_synthetic_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/rnn.py:70: UserWarning: dropout option adds dropout after all but last recurrent layer, so non-zero dropout expects num_layers greater than 1, but got dropout=0.5 and num_layers=1
+  "num_layers={}".format(dropout, num_layers))
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.weight', 'predictions.bias', 'predictions.LayerNorm.weight', 'predictions.decoder.weight', 'predictions.dense.bias', 'predictions.LayerNorm.bias', 'predictions.decoder.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1113: UserWarning: Using a non-full backward hook when the forward contains multiple autograd Nodes is deprecated and will be removed in future versions. This hook will be missing some grad_input. Please use register_full_backward_hook to get the documented behavior.
+  warnings.warn("Using a non-full backward hook when the forward contains multiple autograd Nodes "
+/cto_studio/xuting/miniconda3/envs/table_v1/lib/python3.7/site-packages/torch/nn/modules/module.py:1190: UserWarning: operator() sees varying value in profiling, ignoring and this should be handled by GUARD logic (Triggered internally at ../torch/csrc/jit/codegen/cuda/parser.cpp:3668.)
+  return forward_call(*input, **kwargs)
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.weight', 'predictions.bias', 'predictions.LayerNorm.weight', 'predictions.decoder.weight', 'predictions.dense.bias', 'predictions.LayerNorm.bias', 'predictions.decoder.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/fewrel/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'data_name': 'fewrel', 'split': 'unseen_5_seed_2', 'type': 'filtered', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/fewrel/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+{'filter_data': {'path_pseudo': 'outputs/wrapper/fewrel/unseen_5_seed_2/generator/synthetic.jsonl', 'path_train': 'zero_rte/fewrel/unseen_5_seed_2/train.jsonl', 'path_out': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/filtered.jsonl', 'total_pseudo_per_label': 250, 'pseudo_ratio': 0.2, 'with_train': True, 'by_rel': True, 'version': 'single', 'rescale_train': False}}
+{'num_pseudo': 500, 'num_train': 2000, 'num_pseudo_per_label': 50, 'num_train_per_label': 28}
+num of filtered data: 2374 mean pseudo reward: 1.0
+fit {'path_train': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/filtered.jsonl', 'path_dev': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl'}
+train vocab size: 18035
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 18135, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/data/train.txt
+{"train_model: args: ModelArguments(model_class='JointModel', model_read_ckpt='', model_write_ckpt='outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/model', pretrained_wv='outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/data/train.txt', label_config=None, batch_size=24, evaluate_interval=500, max_steps=10000, max_epoches=20, decay_rate=0.05, token_emb_dim=100, char_encoder='lstm', char_emb_dim=30, cased=False, hidden_dim=200, num_layers=3, crf=None, loss_reduction='sum', maxlen=None, dropout=0.5, optimizer='adam', lr=0.001, vocab_size=18135, vocab_file=None, ner_tag_vocab_size=64, re_tag_vocab_size=250, lm_emb_dim=1024, lm_emb_path='albert-large-v2', head_emb_dim=384, tag_form='iob2', warm_steps=1000, grad_period=1, device='cuda', seed=42)"}
+warm up: learning rate was adjusted to 1e-06
+warm up: learning rate was adjusted to 1.1e-05
+warm up: learning rate was adjusted to 2.1000000000000002e-05
+warm up: learning rate was adjusted to 3.1e-05
+warm up: learning rate was adjusted to 4.1e-05
+warm up: learning rate was adjusted to 5.1000000000000006e-05
+warm up: learning rate was adjusted to 6.1e-05
+warm up: learning rate was adjusted to 7.1e-05
+warm up: learning rate was adjusted to 8.1e-05
+warm up: learning rate was adjusted to 9.1e-05
+g_step 100, step 1, avg_time 1.454, loss:55076.5796
+warm up: learning rate was adjusted to 0.000101
+warm up: learning rate was adjusted to 0.000111
+warm up: learning rate was adjusted to 0.000121
+warm up: learning rate was adjusted to 0.000131
+warm up: learning rate was adjusted to 0.000141
+warm up: learning rate was adjusted to 0.00015099999999999998
+warm up: learning rate was adjusted to 0.000161
+warm up: learning rate was adjusted to 0.000171
+warm up: learning rate was adjusted to 0.00018099999999999998
+warm up: learning rate was adjusted to 0.000191
+g_step 200, step 2, avg_time 1.098, loss:2534.4169
+warm up: learning rate was adjusted to 0.000201
+warm up: learning rate was adjusted to 0.000211
+warm up: learning rate was adjusted to 0.000221
+warm up: learning rate was adjusted to 0.000231
+warm up: learning rate was adjusted to 0.000241
+warm up: learning rate was adjusted to 0.000251
+warm up: learning rate was adjusted to 0.000261
+warm up: learning rate was adjusted to 0.00027100000000000003
+warm up: learning rate was adjusted to 0.00028100000000000005
+warm up: learning rate was adjusted to 0.00029099999999999997
+g_step 300, step 3, avg_time 1.095, loss:2234.8605
+warm up: learning rate was adjusted to 0.000301
+warm up: learning rate was adjusted to 0.000311
+warm up: learning rate was adjusted to 0.000321
+warm up: learning rate was adjusted to 0.000331
+warm up: learning rate was adjusted to 0.00034100000000000005
+warm up: learning rate was adjusted to 0.000351
+warm up: learning rate was adjusted to 0.000361
+warm up: learning rate was adjusted to 0.000371
+warm up: learning rate was adjusted to 0.000381
+warm up: learning rate was adjusted to 0.000391
+g_step 400, step 4, avg_time 1.102, loss:2139.2098
+warm up: learning rate was adjusted to 0.00040100000000000004
+warm up: learning rate was adjusted to 0.000411
+warm up: learning rate was adjusted to 0.000421
+warm up: learning rate was adjusted to 0.000431
+warm up: learning rate was adjusted to 0.000441
+warm up: learning rate was adjusted to 0.000451
+warm up: learning rate was adjusted to 0.00046100000000000004
+warm up: learning rate was adjusted to 0.000471
+warm up: learning rate was adjusted to 0.000481
+warm up: learning rate was adjusted to 0.000491
+g_step 500, step 5, avg_time 1.095, loss:2116.6889
+>> valid entity prec:0.3377, rec:0.5377, f1:0.4148
+>> valid relation prec:0.0000, rec:0.0000, f1:0.0000
+>> valid relation with NER prec:0.0000, rec:0.0000, f1:0.0000
+new max entity f1 on valid!
+new max relation f1 on valid!
+new max relation f1 with NER on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+warm up: learning rate was adjusted to 0.000501
+warm up: learning rate was adjusted to 0.0005110000000000001
+warm up: learning rate was adjusted to 0.000521
+warm up: learning rate was adjusted to 0.000531
+warm up: learning rate was adjusted to 0.000541
+warm up: learning rate was adjusted to 0.0005510000000000001
+warm up: learning rate was adjusted to 0.0005610000000000001
+warm up: learning rate was adjusted to 0.0005710000000000001
+warm up: learning rate was adjusted to 0.0005809999999999999
+warm up: learning rate was adjusted to 0.0005909999999999999
+g_step 600, step 6, avg_time 2.595, loss:2049.1273
+warm up: learning rate was adjusted to 0.000601
+warm up: learning rate was adjusted to 0.000611
+warm up: learning rate was adjusted to 0.000621
+warm up: learning rate was adjusted to 0.000631
+warm up: learning rate was adjusted to 0.000641
+warm up: learning rate was adjusted to 0.000651
+warm up: learning rate was adjusted to 0.000661
+warm up: learning rate was adjusted to 0.000671
+warm up: learning rate was adjusted to 0.0006810000000000001
+warm up: learning rate was adjusted to 0.0006910000000000001
+g_step 700, step 7, avg_time 1.090, loss:1908.8385
+warm up: learning rate was adjusted to 0.000701
+warm up: learning rate was adjusted to 0.0007109999999999999
+warm up: learning rate was adjusted to 0.000721
+warm up: learning rate was adjusted to 0.000731
+warm up: learning rate was adjusted to 0.000741
+warm up: learning rate was adjusted to 0.000751
+warm up: learning rate was adjusted to 0.000761
+warm up: learning rate was adjusted to 0.000771
+warm up: learning rate was adjusted to 0.000781
+warm up: learning rate was adjusted to 0.000791
+g_step 800, step 8, avg_time 1.097, loss:1833.4192
+warm up: learning rate was adjusted to 0.0008010000000000001
+warm up: learning rate was adjusted to 0.0008110000000000001
+warm up: learning rate was adjusted to 0.0008210000000000001
+warm up: learning rate was adjusted to 0.000831
+warm up: learning rate was adjusted to 0.000841
+warm up: learning rate was adjusted to 0.000851
+warm up: learning rate was adjusted to 0.000861
+warm up: learning rate was adjusted to 0.000871
+warm up: learning rate was adjusted to 0.0008810000000000001
+warm up: learning rate was adjusted to 0.000891
+g_step 900, step 9, avg_time 1.098, loss:1670.4914
+warm up: learning rate was adjusted to 0.000901
+warm up: learning rate was adjusted to 0.000911
+warm up: learning rate was adjusted to 0.000921
+warm up: learning rate was adjusted to 0.0009310000000000001
+warm up: learning rate was adjusted to 0.0009410000000000001
+warm up: learning rate was adjusted to 0.000951
+warm up: learning rate was adjusted to 0.0009609999999999999
+warm up: learning rate was adjusted to 0.000971
+warm up: learning rate was adjusted to 0.0009809999999999999
+warm up: learning rate was adjusted to 0.000991
+g_step 1000, step 10, avg_time 1.107, loss:1585.9147
+learning rate was adjusted to 0.0009523809523809524
+>> valid entity prec:0.3531, rec:0.3328, f1:0.3426
+>> valid relation prec:0.8846, rec:0.0066, f1:0.0131
+>> valid relation with NER prec:0.8846, rec:0.0066, f1:0.0131
+new max relation f1 on valid!
+new max relation f1 with NER on valid!
+g_step 1100, step 11, avg_time 2.500, loss:1503.0051
+g_step 1200, step 12, avg_time 1.105, loss:1452.8319
+g_step 1300, step 13, avg_time 1.085, loss:1361.7167
+g_step 1400, step 14, avg_time 1.091, loss:1299.0260
+g_step 1500, step 15, avg_time 1.103, loss:1247.8446
+>> valid entity prec:0.4578, rec:0.4661, f1:0.4619
+>> valid relation prec:0.7067, rec:0.0152, f1:0.0297
+>> valid relation with NER prec:0.7067, rec:0.0152, f1:0.0297
+new max entity f1 on valid!
+new max relation f1 on valid!
+new max relation f1 with NER on valid!
+new max averaged entity f1 and relation f1 on valid!
+new max averaged entity f1 and relation f1 with NER on valid!
+g_step 1600, step 16, avg_time 2.523, loss:1190.4340
+g_step 1700, step 17, avg_time 1.107, loss:1157.5577
+g_step 1800, step 18, avg_time 1.089, loss:1093.1518
+g_step 1900, step 19, avg_time 1.099, loss:1046.5679
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/dev.jsonl', 'labels': ['followed by', 'heritage designation', 'manufacturer', 'operator', 'publisher'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl', 'path_out': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl'}}
+predict vocab size: 11903
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 12003, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:07,  7.05s/it]Extractor Predicting: 2it [00:07,  3.25s/it]Extractor Predicting: 3it [00:08,  2.05s/it]Extractor Predicting: 4it [00:08,  1.48s/it]Extractor Predicting: 5it [00:09,  1.17s/it]Extractor Predicting: 6it [00:10,  1.02it/s]Extractor Predicting: 7it [00:10,  1.16it/s]Extractor Predicting: 8it [00:11,  1.27it/s]Extractor Predicting: 9it [00:11,  1.36it/s]Extractor Predicting: 10it [00:12,  1.47it/s]Extractor Predicting: 11it [00:13,  1.54it/s]Extractor Predicting: 12it [00:13,  1.57it/s]Extractor Predicting: 13it [00:14,  1.61it/s]Extractor Predicting: 14it [00:14,  1.61it/s]Extractor Predicting: 15it [00:15,  1.66it/s]Extractor Predicting: 16it [00:16,  1.66it/s]Extractor Predicting: 17it [00:16,  1.61it/s]Extractor Predicting: 18it [00:17,  1.64it/s]Extractor Predicting: 19it [00:17,  1.69it/s]Extractor Predicting: 20it [00:18,  1.71it/s]Extractor Predicting: 21it [00:19,  1.70it/s]Extractor Predicting: 22it [00:19,  1.72it/s]Extractor Predicting: 23it [00:20,  1.68it/s]Extractor Predicting: 24it [00:20,  1.68it/s]Extractor Predicting: 25it [00:21,  1.67it/s]Extractor Predicting: 26it [00:22,  1.63it/s]Extractor Predicting: 27it [00:22,  1.66it/s]Extractor Predicting: 28it [00:23,  1.64it/s]Extractor Predicting: 29it [00:24,  1.53it/s]Extractor Predicting: 30it [00:24,  1.51it/s]Extractor Predicting: 31it [00:25,  1.50it/s]Extractor Predicting: 32it [00:26,  1.47it/s]Extractor Predicting: 33it [00:26,  1.45it/s]Extractor Predicting: 34it [00:27,  1.44it/s]Extractor Predicting: 35it [00:28,  1.46it/s]Extractor Predicting: 36it [00:28,  1.47it/s]Extractor Predicting: 37it [00:29,  1.47it/s]Extractor Predicting: 38it [00:30,  1.48it/s]Extractor Predicting: 39it [00:30,  1.46it/s]Extractor Predicting: 40it [00:31,  1.44it/s]Extractor Predicting: 41it [00:32,  1.41it/s]Extractor Predicting: 42it [00:33,  1.45it/s]Extractor Predicting: 43it [00:33,  1.46it/s]Extractor Predicting: 44it [00:34,  1.50it/s]Extractor Predicting: 45it [00:35,  1.46it/s]Extractor Predicting: 46it [00:35,  1.45it/s]Extractor Predicting: 47it [00:36,  1.49it/s]Extractor Predicting: 48it [00:37,  1.37it/s]Extractor Predicting: 49it [00:37,  1.40it/s]Extractor Predicting: 50it [00:38,  1.42it/s]Extractor Predicting: 51it [00:39,  1.44it/s]Extractor Predicting: 52it [00:39,  1.44it/s]Extractor Predicting: 53it [00:40,  1.44it/s]Extractor Predicting: 54it [00:41,  1.47it/s]Extractor Predicting: 55it [00:42,  1.45it/s]Extractor Predicting: 56it [00:42,  1.48it/s]Extractor Predicting: 57it [00:43,  1.48it/s]Extractor Predicting: 58it [00:44,  1.44it/s]Extractor Predicting: 59it [00:44,  1.46it/s]Extractor Predicting: 60it [00:45,  1.44it/s]Extractor Predicting: 61it [00:46,  1.42it/s]Extractor Predicting: 62it [00:46,  1.41it/s]Extractor Predicting: 63it [00:47,  1.41it/s]Extractor Predicting: 64it [00:48,  1.42it/s]Extractor Predicting: 65it [00:49,  1.42it/s]Extractor Predicting: 66it [00:49,  1.45it/s]Extractor Predicting: 67it [00:50,  1.43it/s]Extractor Predicting: 68it [00:51,  1.41it/s]Extractor Predicting: 69it [00:51,  1.40it/s]Extractor Predicting: 70it [00:52,  1.39it/s]Extractor Predicting: 71it [00:53,  1.43it/s]Extractor Predicting: 72it [00:53,  1.41it/s]Extractor Predicting: 73it [00:54,  1.45it/s]Extractor Predicting: 74it [00:55,  1.46it/s]Extractor Predicting: 75it [00:55,  1.45it/s]Extractor Predicting: 76it [00:56,  1.45it/s]Extractor Predicting: 77it [00:57,  1.44it/s]Extractor Predicting: 78it [00:58,  1.46it/s]Extractor Predicting: 79it [00:58,  1.46it/s]Extractor Predicting: 80it [00:59,  1.42it/s]Extractor Predicting: 81it [01:00,  1.42it/s]Extractor Predicting: 82it [01:00,  1.40it/s]Extractor Predicting: 83it [01:01,  1.41it/s]Extractor Predicting: 84it [01:02,  1.41it/s]Extractor Predicting: 85it [01:03,  1.40it/s]Extractor Predicting: 86it [01:03,  1.37it/s]Extractor Predicting: 87it [01:04,  1.39it/s]Extractor Predicting: 88it [01:05,  1.38it/s]Extractor Predicting: 89it [01:05,  1.39it/s]Extractor Predicting: 90it [01:06,  1.40it/s]Extractor Predicting: 91it [01:07,  1.41it/s]Extractor Predicting: 92it [01:08,  1.44it/s]Extractor Predicting: 93it [01:08,  1.44it/s]Extractor Predicting: 94it [01:09,  1.47it/s]Extractor Predicting: 95it [01:10,  1.47it/s]Extractor Predicting: 96it [01:10,  1.49it/s]Extractor Predicting: 97it [01:11,  1.49it/s]Extractor Predicting: 98it [01:12,  1.48it/s]Extractor Predicting: 99it [01:12,  1.46it/s]Extractor Predicting: 100it [01:13,  1.44it/s]Extractor Predicting: 101it [01:14,  1.47it/s]Extractor Predicting: 102it [01:14,  1.47it/s]Extractor Predicting: 103it [01:15,  1.48it/s]Extractor Predicting: 104it [01:16,  1.47it/s]Extractor Predicting: 105it [01:16,  1.49it/s]Extractor Predicting: 106it [01:17,  1.50it/s]Extractor Predicting: 107it [01:18,  1.48it/s]Extractor Predicting: 108it [01:18,  1.46it/s]Extractor Predicting: 109it [01:19,  1.45it/s]Extractor Predicting: 110it [01:20,  1.44it/s]Extractor Predicting: 111it [01:20,  1.48it/s]Extractor Predicting: 112it [01:21,  1.49it/s]Extractor Predicting: 113it [01:22,  1.46it/s]Extractor Predicting: 114it [01:22,  1.46it/s]Extractor Predicting: 115it [01:23,  1.48it/s]Extractor Predicting: 116it [01:24,  1.47it/s]Extractor Predicting: 117it [01:25,  1.44it/s]Extractor Predicting: 118it [01:25,  1.46it/s]Extractor Predicting: 119it [01:26,  1.49it/s]Extractor Predicting: 120it [01:26,  1.50it/s]Extractor Predicting: 121it [01:27,  1.45it/s]Extractor Predicting: 122it [01:28,  1.45it/s]Extractor Predicting: 123it [01:29,  1.46it/s]Extractor Predicting: 124it [01:29,  1.46it/s]Extractor Predicting: 125it [01:30,  1.50it/s]Extractor Predicting: 126it [01:31,  1.46it/s]Extractor Predicting: 127it [01:31,  1.47it/s]Extractor Predicting: 128it [01:32,  1.48it/s]Extractor Predicting: 129it [01:33,  1.50it/s]Extractor Predicting: 130it [01:33,  1.45it/s]Extractor Predicting: 131it [01:34,  1.45it/s]Extractor Predicting: 132it [01:35,  1.47it/s]Extractor Predicting: 133it [01:35,  1.44it/s]Extractor Predicting: 134it [01:36,  1.43it/s]Extractor Predicting: 135it [01:37,  1.45it/s]Extractor Predicting: 136it [01:37,  1.47it/s]Extractor Predicting: 137it [01:38,  1.46it/s]Extractor Predicting: 138it [01:39,  1.50it/s]Extractor Predicting: 139it [01:39,  1.53it/s]Extractor Predicting: 140it [01:40,  1.40it/s]Extractor Predicting: 141it [01:41,  1.43it/s]Extractor Predicting: 142it [01:42,  1.44it/s]Extractor Predicting: 143it [01:42,  1.43it/s]Extractor Predicting: 144it [01:43,  1.44it/s]Extractor Predicting: 144it [01:43,  1.39it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.weight', 'predictions.bias', 'predictions.LayerNorm.weight', 'predictions.decoder.weight', 'predictions.dense.bias', 'predictions.LayerNorm.bias', 'predictions.decoder.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_all_single_is_eval_True.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_all_single_is_eval_True.jsonl",
+  "precision": 0.8194444444444444,
+  "recall": 0.016866781017724413,
+  "score": 0.03305322128851541,
+  "mode": "all_single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/results_all_single_is_eval_True.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl'}}
+predict vocab size: 12902
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 13002, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.63it/s]Extractor Predicting: 2it [00:01,  1.69it/s]Extractor Predicting: 3it [00:01,  1.63it/s]Extractor Predicting: 4it [00:02,  1.62it/s]Extractor Predicting: 5it [00:03,  1.60it/s]Extractor Predicting: 6it [00:03,  1.53it/s]Extractor Predicting: 7it [00:04,  1.56it/s]Extractor Predicting: 8it [00:05,  1.57it/s]Extractor Predicting: 9it [00:05,  1.55it/s]Extractor Predicting: 10it [00:06,  1.50it/s]Extractor Predicting: 11it [00:07,  1.51it/s]Extractor Predicting: 12it [00:07,  1.55it/s]Extractor Predicting: 13it [00:08,  1.56it/s]Extractor Predicting: 14it [00:08,  1.56it/s]Extractor Predicting: 15it [00:09,  1.54it/s]Extractor Predicting: 16it [00:10,  1.56it/s]Extractor Predicting: 17it [00:10,  1.57it/s]Extractor Predicting: 18it [00:11,  1.57it/s]Extractor Predicting: 19it [00:12,  1.57it/s]Extractor Predicting: 20it [00:12,  1.52it/s]Extractor Predicting: 21it [00:13,  1.51it/s]Extractor Predicting: 22it [00:14,  1.48it/s]Extractor Predicting: 23it [00:14,  1.52it/s]Extractor Predicting: 24it [00:15,  1.55it/s]Extractor Predicting: 25it [00:16,  1.54it/s]Extractor Predicting: 26it [00:16,  1.61it/s]Extractor Predicting: 27it [00:17,  1.59it/s]Extractor Predicting: 28it [00:17,  1.63it/s]Extractor Predicting: 29it [00:18,  1.60it/s]Extractor Predicting: 30it [00:19,  1.59it/s]Extractor Predicting: 31it [00:19,  1.59it/s]Extractor Predicting: 32it [00:20,  1.63it/s]Extractor Predicting: 33it [00:21,  1.63it/s]Extractor Predicting: 34it [00:21,  1.60it/s]Extractor Predicting: 35it [00:22,  1.58it/s]Extractor Predicting: 36it [00:22,  1.58it/s]Extractor Predicting: 37it [00:23,  1.55it/s]Extractor Predicting: 38it [00:24,  1.55it/s]Extractor Predicting: 39it [00:24,  1.57it/s]Extractor Predicting: 40it [00:25,  1.60it/s]Extractor Predicting: 41it [00:26,  1.60it/s]Extractor Predicting: 42it [00:26,  1.61it/s]Extractor Predicting: 43it [00:27,  1.62it/s]Extractor Predicting: 44it [00:27,  1.60it/s]Extractor Predicting: 45it [00:28,  1.59it/s]Extractor Predicting: 46it [00:29,  1.60it/s]Extractor Predicting: 47it [00:29,  1.61it/s]Extractor Predicting: 48it [00:30,  1.59it/s]Extractor Predicting: 49it [00:31,  1.60it/s]Extractor Predicting: 50it [00:31,  1.63it/s]Extractor Predicting: 51it [00:32,  1.64it/s]Extractor Predicting: 52it [00:32,  1.65it/s]Extractor Predicting: 53it [00:33,  1.63it/s]Extractor Predicting: 54it [00:34,  1.59it/s]Extractor Predicting: 55it [00:34,  1.60it/s]Extractor Predicting: 56it [00:35,  1.56it/s]Extractor Predicting: 57it [00:36,  1.55it/s]Extractor Predicting: 58it [00:36,  1.57it/s]Extractor Predicting: 59it [00:37,  1.55it/s]Extractor Predicting: 60it [00:38,  1.55it/s]Extractor Predicting: 61it [00:38,  1.54it/s]Extractor Predicting: 62it [00:39,  1.43it/s]Extractor Predicting: 63it [00:40,  1.47it/s]Extractor Predicting: 64it [00:40,  1.48it/s]Extractor Predicting: 65it [00:41,  1.48it/s]Extractor Predicting: 66it [00:42,  1.51it/s]Extractor Predicting: 67it [00:42,  1.52it/s]Extractor Predicting: 68it [00:43,  1.50it/s]Extractor Predicting: 69it [00:44,  1.54it/s]Extractor Predicting: 70it [00:44,  1.51it/s]Extractor Predicting: 71it [00:45,  1.53it/s]Extractor Predicting: 72it [00:46,  1.51it/s]Extractor Predicting: 73it [00:46,  1.50it/s]Extractor Predicting: 74it [00:47,  1.50it/s]Extractor Predicting: 75it [00:48,  1.48it/s]Extractor Predicting: 76it [00:48,  1.47it/s]Extractor Predicting: 77it [00:49,  1.48it/s]Extractor Predicting: 78it [00:50,  1.50it/s]Extractor Predicting: 79it [00:50,  1.49it/s]Extractor Predicting: 80it [00:51,  1.48it/s]Extractor Predicting: 81it [00:52,  1.45it/s]Extractor Predicting: 82it [00:52,  1.48it/s]Extractor Predicting: 83it [00:53,  1.47it/s]Extractor Predicting: 84it [00:54,  1.48it/s]Extractor Predicting: 85it [00:54,  1.48it/s]Extractor Predicting: 86it [00:55,  1.50it/s]Extractor Predicting: 87it [00:56,  1.49it/s]Extractor Predicting: 88it [00:56,  1.51it/s]Extractor Predicting: 89it [00:57,  1.53it/s]Extractor Predicting: 90it [00:58,  1.53it/s]Extractor Predicting: 91it [00:58,  1.52it/s]Extractor Predicting: 92it [00:59,  1.51it/s]Extractor Predicting: 93it [01:00,  1.50it/s]Extractor Predicting: 94it [01:00,  1.51it/s]Extractor Predicting: 95it [01:01,  1.51it/s]Extractor Predicting: 96it [01:02,  1.51it/s]Extractor Predicting: 97it [01:02,  1.49it/s]Extractor Predicting: 98it [01:03,  1.51it/s]Extractor Predicting: 99it [01:04,  1.51it/s]Extractor Predicting: 100it [01:04,  1.51it/s]Extractor Predicting: 101it [01:05,  1.49it/s]Extractor Predicting: 102it [01:06,  1.49it/s]Extractor Predicting: 103it [01:06,  1.50it/s]Extractor Predicting: 104it [01:07,  1.47it/s]Extractor Predicting: 105it [01:08,  1.50it/s]Extractor Predicting: 106it [01:08,  1.52it/s]Extractor Predicting: 107it [01:09,  1.50it/s]Extractor Predicting: 108it [01:10,  1.48it/s]Extractor Predicting: 109it [01:10,  1.52it/s]Extractor Predicting: 110it [01:11,  1.50it/s]Extractor Predicting: 111it [01:12,  1.48it/s]Extractor Predicting: 112it [01:12,  1.51it/s]Extractor Predicting: 113it [01:13,  1.52it/s]Extractor Predicting: 114it [01:14,  1.52it/s]Extractor Predicting: 115it [01:14,  1.54it/s]Extractor Predicting: 116it [01:15,  1.52it/s]Extractor Predicting: 117it [01:16,  1.54it/s]Extractor Predicting: 118it [01:16,  1.52it/s]Extractor Predicting: 119it [01:17,  1.50it/s]Extractor Predicting: 120it [01:18,  1.54it/s]Extractor Predicting: 121it [01:18,  1.53it/s]Extractor Predicting: 122it [01:19,  1.56it/s]Extractor Predicting: 123it [01:20,  1.52it/s]Extractor Predicting: 124it [01:20,  1.52it/s]Extractor Predicting: 125it [01:21,  1.51it/s]Extractor Predicting: 126it [01:22,  1.49it/s]Extractor Predicting: 127it [01:22,  1.48it/s]Extractor Predicting: 128it [01:23,  1.48it/s]Extractor Predicting: 129it [01:24,  1.47it/s]Extractor Predicting: 130it [01:24,  1.47it/s]Extractor Predicting: 131it [01:25,  1.43it/s]Extractor Predicting: 132it [01:26,  1.44it/s]Extractor Predicting: 133it [01:26,  1.45it/s]Extractor Predicting: 134it [01:27,  1.48it/s]Extractor Predicting: 135it [01:28,  1.48it/s]Extractor Predicting: 136it [01:29,  1.37it/s]Extractor Predicting: 137it [01:29,  1.40it/s]Extractor Predicting: 138it [01:30,  1.43it/s]Extractor Predicting: 139it [01:31,  1.43it/s]Extractor Predicting: 140it [01:31,  1.45it/s]Extractor Predicting: 141it [01:32,  1.45it/s]Extractor Predicting: 142it [01:33,  1.48it/s]Extractor Predicting: 143it [01:33,  1.47it/s]Extractor Predicting: 144it [01:34,  1.51it/s]Extractor Predicting: 144it [01:34,  1.53it/s]
+Some weights of the model checkpoint at bert-base-uncased were not used when initializing BertModel: ['cls.predictions.decoder.weight', 'cls.predictions.bias', 'cls.predictions.transform.LayerNorm.weight', 'cls.predictions.transform.LayerNorm.bias', 'cls.predictions.transform.dense.weight', 'cls.seq_relationship.bias', 'cls.predictions.transform.dense.bias', 'cls.seq_relationship.weight']
+- This IS expected if you are initializing BertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing BertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+Some weights of the model checkpoint at albert-large-v2 were not used when initializing AlbertModel: ['predictions.dense.weight', 'predictions.bias', 'predictions.LayerNorm.weight', 'predictions.decoder.weight', 'predictions.dense.bias', 'predictions.LayerNorm.bias', 'predictions.decoder.bias']
+- This IS expected if you are initializing AlbertModel from the checkpoint of a model trained on another task or with another architecture (e.g. initializing a BertForSequenceClassification model from a BertForPreTraining model).
+- This IS NOT expected if you are initializing AlbertModel from the checkpoint of a model that you expect to be exactly identical (initializing a BertForSequenceClassification model from a BertForSequenceClassification model).
+{
+  "path_pred": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_single_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_single_is_eval_False.jsonl",
+  "precision": 0.5714285714285714,
+  "recall": 0.002317497103128621,
+  "score": 0.004616272360069244,
+  "mode": "single",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/results_single_is_eval_False.json"
+}
+{'run_eval': {'path_model': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/fewrel/unseen_5_seed_2/test.jsonl', 'labels': ['field of work', 'location of formation', 'occupant', 'place served by transport hub', 'winner'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'predict': {'path_in': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl', 'path_out': 'outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl'}}
+predict vocab size: 346
+{'get_model': {'config': {'cased': False, 'token_emb_dim': 100, 'char_encoder': 'lstm', 'char_emb_dim': 30, 'tag_emb_dim': 50, 'hidden_dim': 200, 'num_layers': 3, 'max_depth': None, 'crf': None, 'loss_reduction': 'sum', 'dropout': 0.5, 'lr': 0.001, 'optimizer': 'adam', 'maxlen': None, 'vocab_size': 446, 'vocab_file': None, 'ner_tag_vocab_size': 64, 're_tag_vocab_size': 250, 'tag_form': 'iob2', 'device': 'cuda', 'lm_emb_dim': 1024, 'lm_emb_path': 'albert-large-v2', 'pos_emb_dim': 0, 'head_emb_dim': 384, 'warm_steps': 1000, 'grad_period': 1}}}
+albert-large-v2 is not file, try load as bert model.
+albert-large-v2 loaded successfully.
+Note it only supports default options now, i.e.: 
+  layers='-1,-2,-3,-4', use_scalar_mix=True, pooling_operation="mean"
+reading pretrained wv from outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/data/predict.txt
+Extractor Predicting: 0it [00:00, ?it/s]Extractor Predicting: 1it [00:00,  1.25it/s]Extractor Predicting: 1it [00:00,  1.25it/s]
+{
+  "path_pred": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_out_filter_multi_is_eval_False.jsonl",
+  "path_gold": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/pred_in_multi_is_eval_False.jsonl",
+  "precision": 0,
+  "recall": 0,
+  "score": 0,
+  "mode": "multi",
+  "limit": 0,
+  "path_results": "outputs/wrapper/fewrel_filtered_large/unseen_5_seed_2/extractor/results_multi_is_eval_False.json"
+}
+Warn: we adopt CRF implemented by allennlp, please install it first before using CRF.
+{'main': {'path_train': 'zero_rte/wiki/unseen_5_seed_2/train.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'data_name': 'wiki', 'split': 'unseen_5_seed_2', 'type': 'filtered', 'model_size': 'large', 'num_gen_per_label': 250, 'g_encoder_name': 'generate'}}
+{'select_model': RelationGenerator(model_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/model', data_dir='outputs/wrapper/wiki/unseen_5_seed_2/generator/data', model_name='gpt2', do_pretrain=False, encoder_name='generate', pipe_name='text-generation', batch_size=32, grad_accumulation=2, random_seed=42, warmup_ratio=0.2, lr_pretrain=0.0003, lr_finetune=3e-05, epochs_pretrain=3, epochs_finetune=5, train_fp16=True, block_size=128)}
+{'filter_data': {'path_pseudo': 'outputs/wrapper/wiki/unseen_5_seed_2/generator/synthetic.jsonl', 'path_train': 'zero_rte/wiki/unseen_5_seed_2/train.jsonl', 'path_out': 'outputs/wrapper/wiki_filtered_large/unseen_5_seed_2/extractor/filtered.jsonl', 'total_pseudo_per_label': 250, 'pseudo_ratio': 0.2, 'with_train': True, 'by_rel': True, 'version': 'single', 'rescale_train': False}}
+fit {'path_train': 'outputs/wrapper/wiki_filtered_large/unseen_5_seed_2/extractor/filtered.jsonl', 'path_dev': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl'}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/dev.jsonl', 'labels': ['made from material', 'manufacturer', 'mouth of the watercourse', 'official language', 'sports discipline competed in'], 'mode': 'all_single', 'model_size': 'large', 'is_eval': True, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'single', 'model_size': 'large', 'is_eval': False, 'limit': 0}}
+{'run_eval': {'path_model': 'outputs/wrapper/wiki_filtered_large/unseen_5_seed_2/extractor', 'path_test': 'zero_rte/wiki/unseen_5_seed_2/test.jsonl', 'labels': ['lyrics by', 'occupant', 'screenwriter', 'use', 'voice type'], 'mode': 'multi', 'model_size': 'large', 'is_eval': False, 'limit': 0}}

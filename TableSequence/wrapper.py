@@ -1,0 +1,811 @@
+import json
+import random
+import math 
+import numpy as np
+from collections import Counter
+from pathlib import Path
+from typing import List
+from torch.nn import CrossEntropyLoss
+
+
+import torch
+from fire import Fire
+from pydantic.main import BaseModel
+from tqdm import tqdm
+
+from generation import LabelConstraint, TripletSearchDecoder
+from modeling_rl import (NewRelationExtractor, RelationGenerator, RelationModel,
+                      select_model)
+from rp_utils import (RelationSentence, WikiDataset, delete_checkpoints,
+                   load_wiki_relation_map, mark_fewrel_entity)
+from extractor import Extractor
+from transformers import AutoModelForSeq2SeqLM, AutoModelForCausalLM, AutoTokenizer
+
+def safe_divide(a: float, b: float) -> float:
+    if a == 0 or b == 0:
+        return 0
+    return a / b
+
+
+class Sentence(BaseModel):
+    triplets: List[RelationSentence]
+
+    @property
+    def tokens(self) -> List[str]:
+        return self.triplets[0].tokens
+
+    @property
+    def text(self) -> str:
+        return " ".join(self.tokens)
+
+    def assert_valid(self):
+        assert len(self.tokens) > 0
+        for t in self.triplets:
+            assert t.text == self.text
+            assert len(t.head) > 0
+            assert len(t.tail) > 0
+            assert len(t.label) > 0
+
+
+class Dataset(BaseModel):
+    sents: List[Sentence]
+
+    def get_labels(self) -> List[str]:
+        return sorted(set(t.label for s in self.sents for t in s.triplets))
+
+    @classmethod
+    def load(cls, path: str):
+        with open(path) as f:
+            sents = [Sentence(**json.loads(line)) for line in f]
+        return cls(sents=sents)
+
+    def save(self, path: str):
+        Path(path).parent.mkdir(exist_ok=True, parents=True)
+        with open(path, "w") as f:
+            for s in self.sents:
+                f.write(s.json() + "\n")
+
+    @classmethod
+    def load_fewrel(cls, path: str, path_properties: str = "data/wiki_properties.csv"):
+        relation_map = load_wiki_relation_map(path_properties)
+        groups = {}
+
+        with open(path) as f:
+            for i, lst in tqdm(json.load(f).items()):
+                for raw in lst:
+                    head, tail = mark_fewrel_entity(raw)
+                    t = RelationSentence(
+                        tokens=raw["tokens"],
+                        head=head,
+                        tail=tail,
+                        label=relation_map[i].pLabel,
+                        label_id=i,
+                    )
+                    groups.setdefault(t.text, []).append(t)
+
+        sents = [Sentence(triplets=lst) for lst in groups.values()]
+        return cls(sents=sents)
+
+    @classmethod
+    def load_wiki(cls, path: str, path_properties: str = "data/wiki_properties.csv"):
+        relation_map = load_wiki_relation_map(path_properties)
+        sents = []
+        with open(path) as f:
+            ds = WikiDataset(
+                mode="train", data=json.load(f), pid2vec=None, property2idx=None
+            )
+            for i in tqdm(range(len(ds))):
+                triplets = ds.load_edges(i)
+                triplets = [t for t in triplets if t.label_id in relation_map.keys()]
+                for t in triplets:
+                    t.label = relation_map[t.label_id].pLabel
+                if triplets:
+                    # ZSBERT only includes first triplet in each sentence
+                    for t in triplets:
+                        t.zerorc_included = False
+                    triplets[0].zerorc_included = True
+
+                    s = Sentence(triplets=triplets)
+                    sents.append(s)
+
+        data = cls(sents=sents)
+        counter = Counter(t.label for s in data.sents for t in s.triplets)
+        threshold = sorted(counter.values())[-113]  # Based on ZSBERT data stats
+        labels = [k for k, v in counter.items() if v >= threshold]
+        data = data.filter_labels(labels)
+        return data
+
+    def filter_labels(self, labels: List[str]):
+        label_set = set(labels)
+        sents = []
+        for s in self.sents:
+            triplets = [t for t in s.triplets if t.label in label_set]
+            if triplets:
+                s = s.copy(deep=True)
+                s.triplets = triplets
+                sents.append(s)
+        return Dataset(sents=sents)
+
+    def train_test_split(self, test_size: int, random_seed: int, by_label: bool):
+        random.seed(random_seed)
+
+        if by_label:
+            labels = self.get_labels()
+            labels_test = random.sample(labels, k=test_size)
+            labels_train = sorted(set(labels) - set(labels_test))
+            sents_train = self.filter_labels(labels_train).sents
+            sents_test = self.filter_labels(labels_test).sents
+        else:
+            sents_train = [s for s in self.sents]
+            sents_test = random.sample(self.sents, k=test_size)
+
+        banned = set(s.text for s in sents_test)  # Prevent sentence overlap
+        sents_train = [s for s in sents_train if s.text not in banned]
+        assert len(self.sents) == len(sents_train) + len(sents_test)
+        return Dataset(sents=sents_train), Dataset(sents=sents_test)
+
+    def analyze(self):
+        info = dict(
+            sents=len(self.sents),
+            unique_texts=len(set(s.triplets[0].text for s in self.sents)),
+            lengths=str(Counter(len(s.triplets) for s in self.sents)),
+            labels=len(self.get_labels()),
+        )
+        print(json.dumps(info, indent=2))
+
+def score(path_pred: str, path_gold: str) -> dict:
+        pred = Dataset.load(path_pred)
+        gold = Dataset.load(path_gold)
+        assert len(pred.sents) == len(gold.sents)
+        num_pred = 0
+        num_gold = 0
+        num_correct = 0
+
+        for i in range(len(gold.sents)):
+            num_pred += len(pred.sents[i].triplets)
+            num_gold += len(gold.sents[i].triplets)
+            if len(pred.sents[i].triplets) == 0:
+                continue
+            assert gold.sents[i].text == pred.sents[i].text, f'{gold.sents[i].text} != {pred.sents[i].text}'
+            for p in pred.sents[i].triplets:
+                for g in gold.sents[i].triplets:
+                    if len(p.head) == 0 or len(p.tail) == 0:
+                        num_pred -= 1 
+                        continue
+                    if (p.head, p.tail, p.label) == (g.head, g.tail, g.label):
+                        num_correct += 1
+
+        precision = safe_divide(num_correct, num_pred)
+        recall = safe_divide(num_correct, num_gold)
+
+        info = dict(
+            path_pred=path_pred,
+            path_gold=path_gold,
+            precision=precision,
+            recall=recall,
+            score=safe_divide(2 * precision * recall, precision + recall),
+        )
+        return info
+
+def tmp_func(path_pred, path_gold):
+    print(score(path_pred, path_gold))
+
+def write_data_splits(
+    path_in: str,
+    mode: str,
+    folder_out: str = "outputs/data/splits/zero_rte",
+    num_dev_labels: int = 5,
+    num_test_labels: List[int] = [5, 10, 15],
+    seeds: List[int] = [0, 1, 2, 3, 4],
+):
+    for n in num_test_labels:
+        for s in seeds:
+            if mode == "fewrel":
+                data = Dataset.load_fewrel(path_in)
+            elif mode == "wiki":
+                data = Dataset.load_wiki(path_in)
+            else:
+                raise ValueError()
+
+            train, test = data.train_test_split(
+                test_size=n, random_seed=s, by_label=True
+            )
+            train, dev = train.train_test_split(
+                test_size=num_dev_labels, random_seed=s, by_label=True
+            )
+            del data
+
+            for key, data in dict(train=train, dev=dev, test=test).items():
+                name = f"unseen_{n}_seed_{s}"
+                path = Path(folder_out) / Path(path_in).stem / name / f"{key}.jsonl"
+                data.save(str(path))
+                print(dict(key=key, labels=len(data.get_labels()), path=path))
+
+
+class Generator(BaseModel):
+    load_dir: str
+    save_dir: str
+    num_gen_per_label: int = 250
+    model_name: str = "generate"
+    encoder_name: str = "generate"
+    model_kwargs: dict = {}
+
+    def get_model(self) -> RelationModel:
+        model = select_model(
+            name=self.model_name,
+            encoder_name=self.encoder_name,
+            model_dir=str(Path(self.save_dir) / "model"),
+            model_name=self.load_dir,
+            data_dir=str(Path(self.save_dir) / "data"),
+            do_pretrain=False,
+            **self.model_kwargs,
+        )
+        return model
+
+    def write_data(self, data: Dataset, name: str) -> str:
+        model = self.get_model()
+        path_out = Path(model.data_dir) / f"{name}.json"
+        path_out.parent.mkdir(exist_ok=True, parents=True)
+        encoder = model.get_encoder()
+        lines = [json.dumps({'input': encoder.encode(t)[0], 'label': encoder.encode(t)[1], 'reward': t.reward}) + '\n' for s in data.sents for t in s.triplets]
+        random.seed(model.random_seed)
+        random.shuffle(lines)
+        with open(path_out, "w") as f:
+            f.write("".join(lines))
+        return str(path_out)
+
+    def fit(self, path_train: str, path_dev: str):
+        model = self.get_model()
+        if Path(model.model_dir).exists():
+            return
+
+        data_train = Dataset.load(path_train)
+        data_dev = Dataset.load(path_dev)
+        path_train = self.write_data(data_train, "train")
+        path_dev = self.write_data(data_dev, "dev")
+        model.fit(path_train=path_train, path_dev=path_dev)
+        delete_checkpoints(model.model_dir)
+
+    def generate(self, labels: List[str], path_out: str):
+        if Path(path_out).exists():
+            return
+
+        model = self.get_model()
+        pipe = model.make_pipe()
+        groups = {}
+        assert isinstance(model, RelationGenerator)
+        for relation in tqdm(labels, desc='Generating'):
+            triplets, raw = model.generate(relation, self.num_gen_per_label, pipe=pipe)
+            for t in triplets:
+                groups.setdefault(t.text, []).append(t)
+
+        sents = [Sentence(triplets=lst) for lst in groups.values()]
+        data = Dataset(sents=sents)
+        data.save(path_out)
+
+    def estimate(self, path_in, path_out):
+        # if Path(path_out).exists():
+        #     return
+        model = self.get_model()
+        gpt_model = AutoModelForCausalLM.from_pretrained(model.model_dir).to('cuda')
+        gpt_tokenizer = AutoTokenizer.from_pretrained(model.model_dir)
+        encoder = model.get_encoder()
+        data_in = Dataset.load(path_in)
+        dataset = []
+        for ins_i, ins in enumerate(data_in.sents):
+            for tri_i, tri in enumerate(ins.triplets):
+                if tri.generator_nll != 0.:
+                    return 
+                x, y = encoder.encode(tri)
+                prefix = gpt_tokenizer.encode(x)
+                dataset.append({'ins_i': ins_i, 'tri_i': tri_i, 'x': x, 'y': y, 'prefix_len': len(prefix) - 1})
+        num_batch = math.ceil(len(dataset) / model.batch_size)
+        bsz = model.batch_size
+        dataset_counter = 0 
+        for i in tqdm(range(num_batch), desc='generator estimating'):
+            batch = dataset[i * bsz: (i + 1) * bsz]
+            batch_input_text = [t['y'] for t in batch]
+            inputs = gpt_tokenizer(batch_input_text, return_tensors='pt', padding=True)
+            input_ids, attention_mask = inputs['input_ids'].to('cuda'), inputs['attention_mask'].to('cuda')
+            labels = torch.where(input_ids == gpt_tokenizer.pad_token_id, -100, input_ids).to('cuda')
+            outputs = gpt_model(input_ids=input_ids, attention_mask=attention_mask, labels=labels).logits
+            # shift 
+            outputs = outputs[..., :-1, :].contiguous()
+            labels = labels[..., 1:].contiguous()
+            loss_fct = CrossEntropyLoss()
+            for o, l in zip(outputs, labels):
+                loss = loss_fct(o.view(-1, o.shape[-1]), l.view(-1), )
+                cond_o, cond_l = o[dataset[dataset_counter]['prefix_len']:], l[dataset[dataset_counter]['prefix_len']:]
+                cond_loss = loss_fct(cond_o.view(-1, cond_o.shape[-1]), cond_l.view(-1))
+                dataset[dataset_counter]['generator_nll'] = loss.item()
+                dataset[dataset_counter]['cond_generator_nll'] = cond_loss.item()
+                dataset_counter += 1
+        assert dataset_counter == len(dataset) 
+        for data in dataset:
+            ins_i, tri_i, g_nll, cond_g_nll = data['ins_i'], data['tri_i'], data['generator_nll'], data['cond_generator_nll']
+            assert ins_i < len(data_in.sents) and tri_i < len(data_in.sents[ins_i].triplets)
+            tri = data_in.sents[ins_i].triplets[tri_i]
+            tri.generator_nll = g_nll
+            tri.cond_generator_nll = cond_g_nll
+        data_in.save(path_out)
+
+def main(
+    path_train: str,
+    path_dev: str,
+    path_test: str,
+    data_name: str, 
+    split: str, 
+    type: str, 
+    model_size: str, 
+    num_gen_per_label: int = 250, 
+    g_encoder_name: str = 'generate', 
+):
+    print(dict(main=locals()))
+    gen_save_dir = str(Path(f'outputs/wrapper/{data_name}') / split / "generator")
+    generator = Generator(
+        load_dir="gpt2",
+        save_dir=gen_save_dir,
+        num_gen_per_label=num_gen_per_label, 
+        encoder_name=g_encoder_name,
+    )
+    ext_save_dir = str(Path(f'outputs/wrapper/{data_name}_{type}_{model_size}') / split / "extractor")
+    extractor = Extractor(
+        pretrained=f'albert-{model_size}-v2',
+        load_dir='',
+        epochs=20,
+        steps=10000, 
+        save_dir=ext_save_dir,
+    )
+
+    labels_dev = Dataset.load(path_dev).get_labels()
+    labels_test = Dataset.load(path_test).get_labels()
+    generator.fit(path_train, path_dev)
+    path_synthetic = str(Path(gen_save_dir) / "synthetic.jsonl")
+    generator.generate(labels_dev + labels_test, path_out=path_synthetic)
+    
+    if type == 'train':
+        extractor.fit(path_train, path_dev)
+    elif type == 'synthetic':
+        extractor.fit(path_synthetic, path_dev)
+    elif type == 'filtered':
+        path_filtered = str(Path(ext_save_dir) / "filtered.jsonl")
+        filter_data(path_synthetic, path_train, path_filtered, num_gen_per_label, 0.2, with_train=True, by_rel=True, version='single', rescale_train=False)
+        extractor.fit(path_filtered, path_dev)
+    else:
+        raise ValueError(f'wrong type value: {type}')
+    run_eval(path_model=ext_save_dir, 
+                 path_test=path_dev, labels=labels_dev, mode='all_single', is_eval=True, model_size=model_size)
+    run_eval(path_model=ext_save_dir, 
+                 path_test=path_test, labels=labels_test, mode='single', is_eval=False, model_size=model_size)
+    run_eval(path_model=ext_save_dir, 
+                 path_test=path_test, labels=labels_test, mode='multi', is_eval=False, model_size=model_size)
+
+def main_pseudo(
+    path_train: str,
+    path_dev: str,
+    path_test: str,
+    save_dir: str,
+    num_iter: int
+):
+    print(dict(main=locals()))
+    generator = Generator(
+        load_dir="gpt2",
+        save_dir=str(Path(save_dir) / "generator/iter0"),
+    )
+    extractor = Extractor(
+        load_dir="facebook/bart-base",
+        save_dir=str(Path(save_dir) / "extractor/iter0"),
+    )
+
+    generator.fit(path_train, path_dev)
+    extractor.fit(path_train, path_dev)
+    
+    labels_dev = Dataset.load(path_dev).get_labels()
+    labels_test = Dataset.load(path_test).get_labels()
+    for i in range(num_iter):
+        path_synthetic = str(Path(save_dir) / "synthetic" / f"{i}.jsonl")
+        # path_synthetic_generator = str(Path(save_dir) / "synthetic" / f"{i}_gen.jsonl")
+        # path_synthetic_extractor = str(Path(save_dir) / "synthetic" / f"{i}_ext.jsonl")
+        generator.generate(labels_dev + labels_test, path_out=path_synthetic)
+        # extractor.estimate(path_synthetic, path_synthetic_extractor)
+        # generator.estimate(path_synthetic, path_synthetic_generator)
+        path_filtered = path_synthetic
+        extractor = Extractor(
+            load_dir=str(Path(save_dir) / "extractor" / f'iter{i}' / "model"),
+            save_dir=str(Path(save_dir) / "extractor" / f'iter{i+1}'),
+        )
+        generator = Generator(
+            load_dir=str(Path(save_dir) / "generator" / f'iter{i}' / "model"),
+            save_dir=str(Path(save_dir) / "generator" / f'iter{i+1}'),
+        )
+        extractor.fit(path_filtered, path_dev)
+        generator.fit(path_filtered, path_dev)
+
+        # path_pred_dev = str(Path(save_dir) / "pred_dev" / f"{i}.jsonl")
+        # path_pred_test = str(Path(save_dir) / "pred_test" / f"{i}.jsonl")
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_test, mode='single', is_eval=False)
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_test, mode='multi', is_eval=False)
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_dev, mode='single', is_eval=True)
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_dev, mode='multi', is_eval=True)
+
+def sort_data(data, version):
+    groups = dict()
+    assert version in ['single', 'all']
+    for ins in data.sents:
+        for tri in ins.triplets:
+            groups.setdefault(tri.label, []).append(tri)
+    if version == 'single':
+        for k in groups:
+            gen_list = []
+            ext_list = []
+            for tri in groups[k]:
+                gen_list.append(tri.cond_generator_nll)
+                ext_list.append(tri.extractor_nll)
+            gen_mean, gen_std = np.mean(gen_list), np.std(gen_list)
+            ext_mean, ext_std = np.mean(ext_list), np.std(ext_list)
+            std_func = lambda x, mean, std: ((x - mean) / std) if std != 0 else (x - mean)
+            nll_func = lambda x: std_func(x.extractor_nll, ext_mean, ext_std) + std_func(x. cond_generator_nll, gen_mean, gen_std)
+            groups[k] = sorted(groups[k], key=lambda x: std_func(x.extractor_nll, ext_mean, ext_std) + std_func(x.cond_generator_nll, gen_mean, gen_std))
+            nll_list = [-nll_func(x) for x in groups[k]]
+            max_nll = max(nll_list)
+            min_nll = min(nll_list)
+            scaler_func = lambda x: (x - min_nll) / (max_nll - min_nll) if max_nll != min_nll else 1.
+            for tri in groups[k]:
+                tri.reward = scaler_func(-nll_func(tri))
+    elif version == 'all':
+    # version 1 tabby
+        gen_list = []
+        ext_list = []
+        for k in groups:
+            for tri in groups[k]:
+                gen_list.append(tri.cond_generator_nll)
+                ext_list.append(tri.extractor_nll)
+        gen_mean, gen_std = np.mean(gen_list), np.std(gen_list)
+        ext_mean, ext_std = np.mean(ext_list), np.std(ext_list)
+        std_func = lambda x, mean, std: ((x - mean) / std) if std != 0 else (x - mean) 
+        nll_func = lambda x: std_func(x.extractor_nll, ext_mean, ext_std) + std_func(x.cond_generator_nll, gen_mean, gen_std)
+        max_ll, min_ll = None, None
+        for k in groups:
+            groups[k] = sorted(groups[k], key=lambda x: nll_func(x))
+            ll_list = [-nll_func(x) for x in groups[k]]
+            max_ll = max(max_ll, max(ll_list)) if max_ll is not None else max(ll_list)
+            min_ll = min(min_ll, min(ll_list)) if min_ll is not None else min(ll_list)
+        for k in groups:
+            scaler_func = lambda x: (x - min_ll) / (max_ll - min_ll) if max_ll != min_ll else 1.
+            for tri in groups[k]:
+                tri.reward = scaler_func(-nll_func(tri))
+    return groups 
+
+
+def filter_data(path_pseudo, path_train, path_out, total_pseudo_per_label, pseudo_ratio, with_train, by_rel, version, rescale_train):
+    print(dict(filter_data=locals()))
+    if Path(path_out).exists():
+        return 
+    
+    assert by_rel == True
+    train_data = Dataset.load(path_train)
+    pseudo_data = Dataset.load(path_pseudo)
+    num_pseudo = int(total_pseudo_per_label * pseudo_ratio * len(pseudo_data.get_labels()))
+    num_train = int(total_pseudo_per_label * (1- pseudo_ratio) * len(pseudo_data.get_labels()))
+    num_pseudo_per_label = int(num_pseudo / len(pseudo_data.get_labels()))
+    num_train_per_label = int(num_train / len(train_data.get_labels()))
+    print(dict(num_pseudo=num_pseudo, num_train=num_train, num_pseudo_per_label=num_pseudo_per_label, num_train_per_label=num_train_per_label))
+    
+    # 按relation分类，并排序
+    train_data = sort_data(train_data, version=version)
+    pseudo_data = sort_data(pseudo_data, version=version)
+    groups = dict()
+    pseudo_reward = []
+    for k in pseudo_data:
+        groups[k] = pseudo_data[k][: num_pseudo_per_label]
+        pseudo_reward.extend([t.reward for t in groups[k]])
+    mean_pseudo_reward = np.mean(pseudo_reward)
+    if with_train:
+        for k in train_data:
+            groups[k] = train_data[k][: num_train_per_label]
+            if rescale_train:
+                for tri in groups[k]:
+                    tri.reward = mean_pseudo_reward
+    
+
+    # 按text合并
+    if with_train:
+        assert set(groups.keys()) == set(train_data.keys()) | set(pseudo_data.keys())
+    else:
+        assert set(groups.keys()) == set(pseudo_data.keys())
+    text_data = dict()
+    for k in groups:
+        for tri in groups[k]:
+            text_data.setdefault(tri.text, []).append(tri)
+    sents = [Sentence(triplets=lst) for lst in text_data.values()]
+    print('num of filtered data:', len(sents), 'mean pseudo reward:', mean_pseudo_reward)
+    data = Dataset(sents=sents)
+    data.save(path_out)
+
+def filter_data_nb_rel(path_pseudo, path_train, path_out, total_pseudo_per_label, pseudo_ratio, with_train, by_rel, version, rescale_train):
+    print(dict(filter_data_nb_rel=locals()))
+    if Path(path_out).exists():
+        return 
+    assert by_rel == False
+    train_data = Dataset.load(path_train)
+    pseudo_data = Dataset.load(path_pseudo)
+    pseudo_labels = pseudo_data.get_labels()
+    num_pseudo = int(total_pseudo_per_label * pseudo_ratio * len(pseudo_data.get_labels()))
+    num_train = int(total_pseudo_per_label * (1- pseudo_ratio) * len(pseudo_data.get_labels()))
+    num_pseudo_per_label = int(num_pseudo / len(pseudo_data.get_labels()))
+    print(dict(num_pseudo=num_pseudo, num_train=num_train))
+    # 按relation分类，并排序
+    train_data = sort_data(train_data, version='all')
+    pseudo_data = sort_data(pseudo_data, version='all')
+    nb_rel_train_data = [x for k, v in train_data.items() for x in v]
+    nb_rel_pseudo_data = [x for k, v in pseudo_data.items() for x in v]
+    nb_rel_train_data = random.sample(nb_rel_train_data, num_train)
+    origin_pseudo_data = sorted(nb_rel_pseudo_data, key=lambda x: x.reward, reverse=True)
+    nb_rel_pseudo_data = origin_pseudo_data[:num_pseudo]
+
+    for rel in pseudo_labels:
+        rel_pseudo_data = [x for x in nb_rel_pseudo_data if x.label == rel]
+        num = len(rel_pseudo_data)
+        if num < num_pseudo_per_label / 5:
+            rel_data = [x for x in origin_pseudo_data if x.label == rel and x not in rel_pseudo_data]
+            nb_rel_pseudo_data.extend(rel_data[:num_pseudo_per_label // 5 - num])
+    pseudo_reward = [x.reward for x in nb_rel_pseudo_data]
+    mean_pseudo_reward = np.mean(pseudo_reward)
+    if with_train:
+        for tri in train_data:
+            if rescale_train:
+                tri.reward = mean_pseudo_reward
+    all_data = nb_rel_train_data + nb_rel_pseudo_data if with_train else nb_rel_pseudo_data
+    
+    # 按text合并
+    if with_train:
+        assert len(all_data) == len(nb_rel_pseudo_data) + len(nb_rel_train_data)
+    else:
+        assert len(all_data) == len(nb_rel_pseudo_data)
+    text_data = dict()
+    for tri in all_data:
+        text_data.setdefault(tri.text, []).append(tri)
+    sents = [Sentence(triplets=lst) for lst in text_data.values()]
+    print('num of filtered data:', len(sents), 'mean pseudo reward:', mean_pseudo_reward)
+    data = Dataset(sents=sents)
+    data.save(path_out)
+
+def main_dual(
+    path_train: str,
+    path_dev: str,
+    path_test: str,
+    save_dir: str,
+    num_iter: int,
+    data_name: str, 
+    split: str, 
+    type: str, 
+    model_size: str, 
+    with_train: bool,
+    by_rel: bool,
+    rl_version: str, 
+    rescale_train: bool, 
+    score_only_ext: bool = False, 
+    limit: int = 5000,
+    g_encoder_name: str = 'generate', 
+    num_gen_per_label: int = 250, 
+    diverse: bool = False, 
+):
+    print(dict(main_dual=locals()))
+    gen_save_dir = str(Path(f'outputs/wrapper/{data_name}') / split / "generator")
+    generator = Generator(
+        load_dir='gpt2',
+        save_dir=gen_save_dir,
+        num_gen_per_label=num_gen_per_label + 100, 
+        encoder_name=g_encoder_name,
+    )
+    ext_save_dir = str(Path(f'outputs/wrapper/{data_name}_{type}_{model_size}') / split / "extractor")
+    extractor = Extractor(
+        pretrained=f'albert-{model_size}-v2',
+        load_dir='',
+        epochs=20,
+        steps=10000, 
+        save_dir=ext_save_dir,
+    )
+    labels_dev = Dataset.load(path_dev).get_labels()
+    labels_test = Dataset.load(path_test).get_labels()
+    for i in range(num_iter):
+        path_synthetic = str(Path(save_dir) / "synthetic" / f"{i}.jsonl")
+        path_synthetic_ext = str(Path(save_dir) / "synthetic" / f"{i}_ext.jsonl")
+        generator.generate(labels_dev + labels_test, path_out=path_synthetic)
+        if not score_only_ext:
+            generator.estimate(path_synthetic, path_synthetic)
+        extractor.estimate(path_synthetic, path_synthetic_ext)
+        
+
+        # filter
+        path_filtered = str(Path(save_dir) / "filtered" / f"{i}.jsonl")
+        if by_rel:
+            filter_data(path_synthetic_ext, path_train, path_filtered, num_gen_per_label, (i + 1.) / num_iter, with_train, by_rel, version=rl_version, rescale_train=rescale_train)
+        else:
+            filter_data_nb_rel(path_synthetic_ext, path_train, path_filtered, num_gen_per_label, (i + 1.) / num_iter, with_train, by_rel, version=rl_version, rescale_train=rescale_train)
+
+        extractor = Extractor(
+            pretrained=f'albert-{model_size}-v2',
+            load_dir=str(Path(save_dir) / "extractor" / f'iter{i}' / "model") if i !=0 else f'{ext_save_dir}/model',
+            save_dir=str(Path(save_dir) / "extractor" / f'iter{i+1}'),
+            epochs=20,
+            steps=10000,
+        )
+        generator = Generator(
+            load_dir=str(Path(save_dir) / "generator" / f'iter{i}' / "model") if i != 0 else f'{gen_save_dir}/model',
+            save_dir=str(Path(save_dir) / "generator" / f'iter{i+1}'),
+            num_gen_per_label=num_gen_per_label + 100, 
+            encoder_name=g_encoder_name,
+        )
+        extractor.fit(path_filtered, path_dev)
+        generator.fit(path_filtered, path_dev)
+
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_dev, labels=labels_dev, mode='all_single', is_eval=True, model_size=model_size)
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_test, labels=labels_test, mode='single', is_eval=False, model_size=model_size)
+        run_eval(path_model=str(Path(save_dir) / "extractor" / f'iter{i+1}'), 
+                 path_test=path_test, labels=labels_test, mode='multi', is_eval=False, model_size=model_size)
+
+    eval_best(path_test=path_test, save_dir=save_dir, labels=labels_test, num_iter=num_iter, limit=limit)
+
+def eval_best_loss(path_test: str, save_dir: str, num_iter: int, limit: int):
+    print(dict(eval_best_loss=locals()))
+    best = 100.
+    best_i = -1
+    for i in range(num_iter + 1):
+        path_model = str(Path(save_dir) /'extractor' / f'iter{i}')
+        path_results = str(Path(path_model) / 'model' / f"eval_results.json")
+        with open(path_results) as f:
+            data = json.load(f)
+            metric = data['eval_loss']
+            if metric < best:
+                best = metric 
+                best_i = i
+    print('best eval metric is', best, 'at iter', best_i)
+    path_model = str(Path(save_dir) / 'extractor' / f'iter{best_i}')
+    run_eval(path_model=path_model, path_test=path_test, mode='single', is_eval=False)
+    run_eval(path_model=path_model, path_test=path_test, mode='multi', is_eval=False)
+    # run_eval(path_model=path_model, path_test=path_test, mode='all_single', is_eval=False)
+    # run_eval(path_model=path_model, path_test=path_test, mode='all_multi', is_eval=False)
+
+
+def main_many(data_dir_pattern: str, save_dir: str, **kwargs):
+    mode = Path(save_dir).name
+    assert mode in ["fewrel", "wiki"]
+    records = []
+
+    for path in tqdm(sorted(Path().glob(data_dir_pattern))):
+        path_train = path / "train.jsonl"
+        path_dev = path / "dev.jsonl"
+        path_test = path / "test.jsonl"
+        results = main(
+            path_train=str(path_train),
+            path_dev=str(path_dev),
+            path_test=str(path_test),
+            save_dir=str(Path(save_dir) / path.name),
+            **kwargs,
+        )
+        records.append(results)
+
+    avg_p = sum([r["precision"] for r in records]) / len(records)
+    avg_r = sum([r["recall"] for r in records]) / len(records)
+    avg_f = safe_divide(2 * avg_p * avg_r, avg_p + avg_r)
+    info = dict(avg_p=avg_p, avg_r=avg_r, avg_f=avg_f)
+    print(json.dumps(info, indent=2))
+
+def eval_best(path_test: str, save_dir: str, labels: list, num_iter: int, limit: int):
+    print(dict(eval_best=locals()))
+    best = 0.
+    best_i = -1
+    for i in range(num_iter):
+        metric = 0 
+        for mode in ['single']:
+            path_model = str(Path(save_dir) /'extractor' / f'iter{i+1}')
+            is_eval = f'is_eval_True'
+            path_results = str(Path(path_model) / f"results_{mode}_{is_eval}.json") if limit == 0 else str(Path(path_model) / f"results_{mode}_{is_eval}_limit{limit}.json")
+            with open(path_results) as f:
+                data = json.load(f)['score']
+                metric += data
+        if metric > best:
+            best = metric 
+            best_i = i
+    print('best eval metric is', best, 'at iter', best_i+1)
+    path_model = str(Path(save_dir) / 'extractor' / f'iter{best_i+1}')
+    run_eval(path_model=path_model, path_test=path_test, labels=labels, mode='single', is_eval=False)
+    run_eval(path_model=path_model, path_test=path_test, labels=labels, mode='multi', is_eval=False)
+    # run_eval(path_model=path_model, path_test=path_test, mode='all_single', is_eval=False)
+    # run_eval(path_model=path_model, path_test=path_test, mode='all_multi', is_eval=False)
+
+
+def run_eval(path_model: str, path_test: str, labels: list, mode: str, model_size: str, is_eval: bool, limit: int = 0):
+    print(dict(run_eval=locals()))
+    is_eval = f'is_eval_{is_eval}'
+    path_results = str(Path(path_model) / f"results_{mode}_{is_eval}.json") if limit == 0 else str(Path(path_model) / f"results_{mode}_{is_eval}_limit{limit}.json")
+    if Path(path_results).exists():
+        return 
+    data = Dataset.load(path_test)
+    model = Extractor(load_dir=str(Path(path_model) / "model"), save_dir=path_model,
+    pretrained=f'albert-{model_size}-v2')
+
+    if mode == "single":
+        data.sents = [s for s in data.sents if len(s.triplets) == 1]
+    elif mode == "multi":
+        data.sents = [s for s in data.sents if len(s.triplets) > 1]
+    elif 'all' in mode:
+        pass
+    else:
+        raise ValueError(f"mode must be single or multi")
+
+    if limit > 0:
+        random.seed(0)
+        random.shuffle(data.sents)
+        data.sents = data.sents[:limit]
+    path_in = str(Path(path_model) / f"pred_in_{mode}_{is_eval}.jsonl") if limit == 0 else str(Path(path_model) / f"pred_in_{mode}_{is_eval}_limit{limit}.jsonl")
+    path_out = str(Path(path_model) / f"pred_out_filter_{mode}_{is_eval}.jsonl") if limit == 0 else str(Path(path_model) / f"pred_out_filter_{mode}_{is_eval}_limit{limit}.jsonl")
+    data.save(path_in)
+
+    model.predict(path_in, path_out, labels)
+
+    results = score(path_pred=path_out, path_gold=path_in)
+    
+    results.update(mode=mode, limit=limit, path_results=path_results)
+    print(json.dumps(results, indent=2))
+    with open(path_results, "w") as f:
+        json.dump(results, f, indent=2)
+
+
+def run_eval_many(path_model_pattern: str, data_dir: str, **kwargs):
+    for path in tqdm(sorted(Path().glob(path_model_pattern))):
+        name = path.parts[-2]
+        path_test = Path(data_dir) / name / "test.jsonl"
+        assert path_test.exists()
+        run_eval(path_model=str(path), path_test=str(path_test), **kwargs)
+
+
+"""
+FewRel Dataset
+
+python wrapper.py main \
+--path_train outputs/data/splits/zero_rte/fewrel/unseen_10_seed_0/train.jsonl \
+--path_dev outputs/data/splits/zero_rte/fewrel/unseen_10_seed_0/dev.jsonl \
+--path_test outputs/data/splits/zero_rte/fewrel/unseen_10_seed_0/test.jsonl \
+--save_dir outputs/wrapper/fewrel/unseen_10_seed_0
+
+python wrapper.py run_eval \
+--path_model outputs/wrapper/fewrel/unseen_10_seed_0/extractor_final \
+--path_test outputs/data/splits/zero_rte/fewrel/unseen_10_seed_0/test.jsonl \
+--mode single
+
+python wrapper.py run_eval \
+--path_model outputs/wrapper/fewrel/unseen_10_seed_0/extractor_final \
+--path_test outputs/data/splits/zero_rte/fewrel/unseen_10_seed_0/test.jsonl \
+--mode multi
+
+Wiki-ZSL Dataset
+
+python wrapper.py main \
+--path_train outputs/data/splits/zero_rte/wiki/unseen_10_seed_0/train.jsonl \
+--path_dev outputs/data/splits/zero_rte/wiki/unseen_10_seed_0/dev.jsonl \
+--path_test outputs/data/splits/zero_rte/wiki/unseen_10_seed_0/test.jsonl \
+--save_dir outputs/wrapper/wiki/unseen_10_seed_0
+
+python wrapper.py run_eval \
+--path_model outputs/wrapper/wiki/unseen_10_seed_0/extractor_final \
+--path_test outputs/data/splits/zero_rte/wiki/unseen_10_seed_0/test.jsonl \
+--mode single
+
+python wrapper.py run_eval \
+--path_model outputs/wrapper/wiki/unseen_10_seed_0/extractor_final \
+--path_test outputs/data/splits/zero_rte/wiki/unseen_10_seed_0/test.jsonl \
+--mode multi
+
+"""
+
+
+if __name__ == "__main__":
+    Fire()
