@@ -2,6 +2,8 @@
 This repository contains code and data for the paper: 
 [A Two-Agent Game for Zero-shot Relation Triplet Extraction](https://aclanthology.org/2024.findings-acl.446/)(Xu et al. ACL Findings 2024). Below is the framework of the paper.
 
+![Framework](framework_figure.png)
+
 ## Environment Setup
 For RelationPrompt + TAG:
 `pip install -r RelationPrompt/requirements.txt`
